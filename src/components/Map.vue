@@ -115,8 +115,6 @@ export default {
       modelManager.style = ''
       toolbar.insertBefore(modelManager, homeButton)
 
-      console.log(Cesium.distanceUnits)
-
       // const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
       // handler.setInputAction(function(event) {
       //   const earthPosition = viewer.camera.pickEllipsoid(
