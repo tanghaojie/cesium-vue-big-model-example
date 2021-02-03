@@ -60,7 +60,7 @@ export default {
   props: {},
   data() {
     return {
-      modelManagerShow: true,
+      modelManagerShow: false,
       addModelName: '',
       addModelUrl: '',
       addModelVisible: false,

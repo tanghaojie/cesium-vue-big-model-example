@@ -2,19 +2,27 @@ const CopyPlugin = require('copy-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = {
-  // publicPath:
-  //   process.env.NODE_ENV === 'production' ? '/\n' + 'vue-cesium-example/' : '/',
+  publicPath: './',
   configureWebpack: {
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: 'node_modules/cesium/Build/Cesium/Workers', to: 'Cesium/Workers' },
+          {
+            from: 'node_modules/cesium/Build/Cesium/Workers',
+            to: 'Cesium/Workers'
+          },
           {
             from: 'node_modules/cesium/Build/Cesium/ThirdParty',
             to: 'Cesium/ThirdParty'
           },
-          { from: 'node_modules/cesium/Build/Cesium/Assets', to: 'Cesium/Assets' },
-          { from: 'node_modules/cesium/Build/Cesium/Widgets', to: 'Cesium/Widgets' }
+          {
+            from: 'node_modules/cesium/Build/Cesium/Assets',
+            to: 'Cesium/Assets'
+          },
+          {
+            from: 'node_modules/cesium/Build/Cesium/Widgets',
+            to: 'Cesium/Widgets'
+          }
         ]
       }),
       new webpack.DefinePlugin({
