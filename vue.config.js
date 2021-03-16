@@ -30,11 +30,13 @@ module.exports = {
         CESIUM_BASE_URL: JSON.stringify('./Cesium')
       })
     ]
-    // module: {
-    //   // Removes these errors: "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted"
-    //   // https://github.com/AnalyticalGraphicsInc/cesium-webpack-example/issues/6
-    //   unknownContextCritical: false,
-    //   unknownContextRegExp: /\/cesium\/cesium\/Source\/Core\/buildModuleUrl\.js/
-    // }
+  },
+  lintOnSave: false,
+
+  devServer: {
+    overlay: {
+      warning: false,
+      errors: false
+    }
   }
 }
