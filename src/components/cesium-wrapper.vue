@@ -53,7 +53,26 @@ export default {
       type: Boolean,
       default: false
     },
-
+    scene3DOnly: {
+      type: Boolean,
+      default: false
+    },
+    useDefaultRenderLoop: {
+      type: Boolean,
+      default: true
+    },
+    showRenderLoopErrors: {
+      type: Boolean,
+      default: true
+    },
+    automaticallyTrackDataSourceClocks: {
+      type: Boolean,
+      default: true
+    },
+    sceneMode: {
+      type: Number,
+      default: Cesium.SceneMode.SCENE3D
+    },
     globalViewerMountKey: {
       type: String,
       default: '',
@@ -221,9 +240,7 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         const geocoder = new Cesium.Geocoder({
           container: geocoderContainer,
           geocoderServices: Cesium.defined(this.geocoder)
-            ? Cesium.isArray(this.geocoder)
-              ? this.geocoder
-              : [this.geocoder]
+            ? this.geocoder
             : undefined,
           scene: viewer.scene,
           viewer: viewer
@@ -301,9 +318,7 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
           viewer._onInfoBoxClockClicked,
           viewer
         )
-        const events = ['cameraClicked', 'closeClicked']
-        infoBoxViewModel &&
-          bindEvents.call(this, infoBoxViewModel, events, true)
+        // const events = ['cameraClicked', 'closeClicked']
         viewer._infoBox = infoBox
       }
       viewer.forceResize()
@@ -363,7 +378,7 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
       }
     },
     timeline(val) {
-      const { viewer, viewerContainer, onTimelineScrubfunction } = this
+      const { viewer, viewerContainer } = this
       if (
         Cesium.defined(viewer.timeline) &&
         !viewer.timeline.isDestroyed() &&
@@ -385,7 +400,12 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         timeline.makeLabel = time => {
           return that.localeDateTimeFormatter(time)
         }
-        timeline.addEventListener('settime', onTimelineScrubfunction, false)
+        // 响应时间轴拖动
+        timeline.addEventListener(
+          'settime',
+          this.onTimelineScrubfunction,
+          false
+        )
         timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime)
         viewer._timeline = timeline
       }
@@ -427,6 +447,19 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         })
         viewer._navigationHelpButton = navigationHelpButton
       }
+    },
+    useDefaultRenderLoop(val) {
+      this.viewer.useDefaultRenderLoop = val
+    }
+  },
+  computed: {
+    TimeZoneCode() {
+      return new Date().getTimezoneOffset() === 0
+        ? 'UTC'
+        : 'UTC' + '+' + -(new Date().getTimezoneOffset() / 60)
+    },
+    UTCoffset() {
+      return -new Date().getTimezoneOffset()
     }
   },
   methods: {
@@ -445,18 +478,17 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         throw new Error('Viewer：the id is empty')
       }
       const DEFAULT_OPT = {
-        animation: false, // 是否创建动画小器件，左下角仪表
-        baseLayerPicker: false, // 是否显示图层选择器
+        animation: this.animation, // 是否创建动画小器件，左下角仪表
+        baseLayerPicker: this.baseLayerPicker, // 是否显示图层选择器
         fullscreenButton: this.fullscreenButton, // 是否显示全屏按钮
-        geocoder: false, // 是否显示geocoder小器件，右上角查询按钮
-        homeButton: false, // 是否显示Home按钮
-        infoBox: false, // 是否显示信息框
-        sceneModePicker: false, // 是否显示3D/2D选择器
-        // selectionIndicator: false, // 是否显示选取指示器组件
-        timeline: false, // 是否显示时间轴
-        navigationHelpButton: false, // 是否显示右上角的帮助按钮
-
-        // scene3DOnly: true, // 如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
+        geocoder: this.geocoder, // 是否显示geocoder小器件，右上角查询按钮
+        homeButton: this.homeButton, // 是否显示Home按钮
+        infoBox: this.infoBox, // 是否显示信息框
+        sceneModePicker: this.sceneModePicker, // 是否显示3D/2D选择器
+        selectionIndicator: this.sceneModePicker, // 是否显示选取指示器组件
+        timeline: this.timeline, // 是否显示时间轴
+        navigationHelpButton: this.navigationHelpButton, // 是否显示右上角的帮助按钮
+        scene3DOnly: this.scene3DOnly, // 如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
         // clock: new Cesium.Clock(), // 用于控制当前时间的时钟对象
         // selectedImageryProviderViewModel: undefined, // 当前图像图层的显示模型，仅baseLayerPicker设为true有意义
         // imageryProviderViewModels: Cesium.createDefaultImageryProviderViewModels(), // 可供BaseLayerPicker选择的图像图层ProviderViewModel数组
@@ -468,7 +500,7 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
           requestWaterMask: true,
           // required for terrain lighting
           requestVertexNormals: true
-        }) // new Cesium.EllipsoidTerrainProvider() // 地形图层提供者，仅baseLayerPicker设为false有意义
+        }), // new Cesium.EllipsoidTerrainProvider() // 地形图层提供者，仅baseLayerPicker设为false有意义
         // skyBox: new Cesium.SkyBox({
         //   sources: {
         //     positiveX: 'Cesium-1.7.1/Skybox/px.jpg',
@@ -480,12 +512,12 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         //   }
         // }), // 用于渲染星空的SkyBox对象
         // fullscreenElement: document.body, // 全屏时渲染的HTML元素,
-        // useDefaultRenderLoop: true, // 如果需要控制渲染循环，则设为true
+        useDefaultRenderLoop: this.useDefaultRenderLoop, // 如果需要控制渲染循环，则设为true
         // targetFrameRate: undefined, // 使用默认render loop时的帧率
-        // showRenderLoopErrors: false, // 如果设为true，将在一个HTML面板中显示错误信息
+        showRenderLoopErrors: this.showRenderLoopErrors, // 如果设为true，将在一个HTML面板中显示错误信息
         // automaticallyTrackDataSourceClocks: true, // 自动追踪最近添加的数据源的时钟设置
         // contextOptions: undefined, // 传递给Scene对象的上下文参数（scene.options）
-        // sceneMode: Cesium.SceneMode.SCENE3D, // 初始场景模式
+        sceneMode: this.sceneMode // 初始场景模式
         // mapProjection: new Cesium.WebMercatorProjection(), //地 图投影体系
         // dataSources: new Cesium.DataSourceCollection() // 需要进行可视化的数据源的集合
       }
@@ -511,6 +543,51 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
       viewer.extend(logMousePositionMixin)
 
       return viewer
+    },
+
+    localeDateTimeFormatter(datetime, viewModel, ignoredate) {
+      if (this.UTCoffset) {
+        datetime = Cesium.JulianDate.addMinutes(datetime, this.UTCoffset, {})
+      }
+      const gregorianDT = Cesium.JulianDate.toGregorianDate(datetime)
+      let objDT
+      if (ignoredate) {
+        objDT = ''
+      } else {
+        objDT = new Date(
+          gregorianDT.year,
+          gregorianDT.month - 1,
+          gregorianDT.day
+        )
+        objDT =
+          gregorianDT.year +
+          '年' +
+          objDT.toLocaleString('zh-hans', { month: 'short' }) +
+          gregorianDT.day +
+          '日'
+
+        if (viewModel || gregorianDT.hour + gregorianDT.minute === 0) {
+          return objDT
+        }
+        objDT += ' '
+      }
+      return (
+        objDT +
+        Cesium.sprintf(
+          '%02d:%02d:%02d ' + this.TimeZoneCode,
+          gregorianDT.hour,
+          gregorianDT.minute,
+          gregorianDT.second
+        )
+      )
+    },
+    localeTimeFormatter(time, viewModel) {
+      return this.localeDateTimeFormatter(time, viewModel, true)
+    },
+    onTimelineScrubfunction(e) {
+      const clock = e.clock
+      clock.currentTime = e.timeJulian
+      clock.shouldAnimate = false
     }
   },
   destroyed() {

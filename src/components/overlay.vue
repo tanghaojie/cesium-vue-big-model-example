@@ -1,5 +1,12 @@
 <template>
-  <div class="overlay" :style="{ 'z-index': zIndex }">
+  <div
+    class="overlay"
+    :style="{
+      'z-index': zIndex,
+      'pointer-events': acceptPointerEvents ? 'all' : 'none',
+      position: positionMode
+    }"
+  >
     <slot />
   </div>
 </template>
@@ -11,6 +18,14 @@ export default {
       type: Number,
       default: 1,
       required: false
+    },
+    acceptPointerEvents: {
+      type: Boolean,
+      default: false
+    },
+    positionMode: {
+      type: String,
+      default: 'absolute'
     }
   }
 }
@@ -18,11 +33,9 @@ export default {
 
 <style lang="scss" scoped>
 .overlay {
-  position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  pointer-events: none;
 }
 </style>

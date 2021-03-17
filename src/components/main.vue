@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="main">
     <cesium-wrapper
       :timeline="cesiumOptions.timeline"
       :animation="cesiumOptions.animation"
@@ -30,14 +30,13 @@
 </template>
 
 <script>
-import CesiumWrapper from './components/cesium-wrapper'
-import Overlay from './components/overlay'
-import proj from './components/proj'
-import setting from './components/setting'
+import CesiumWrapper from './cesium-wrapper'
+import Overlay from './overlay'
+import proj from './proj'
+import setting from './setting'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'App',
   components: {
     CesiumWrapper,
     Overlay,
@@ -73,16 +72,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
-html,
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-#app {
+<style lang="scss" scoped>
+.main {
   .map {
     height: 100vh;
     width: 100vw;
