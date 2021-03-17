@@ -7,10 +7,10 @@
 <script>
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import * as Cesium from 'cesium'
-import logMousePositionMixin from '../mixin/cesium/mixins/logMousePositionMixin'
+import logMousePositionMixin from '../../mixin/cesium/mixins/logMousePositionMixin'
 
 export default {
-  name: 'JTCesiumWrapper',
+  name: 'JTViewerWrapper',
   components: {},
   props: {
     animation: {

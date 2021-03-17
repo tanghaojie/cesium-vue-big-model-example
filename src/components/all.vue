@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="all">
     <cesium-wrapper
       :timeline="cesiumOptions.timeline"
       :animation="cesiumOptions.animation"
@@ -12,10 +12,9 @@
       :selectionIndicator="cesiumOptions.selectionIndicator"
       :navigationHelpButton="cesiumOptions.navigationHelpButton"
       globalViewerMountKey="qq"
-      class="map"
     >
       <overlay>
-        <proj />
+        <browser-panel />
       </overlay>
     </cesium-wrapper>
     <overlay
@@ -30,17 +29,18 @@
 </template>
 
 <script>
-import CesiumWrapper from './cesium-wrapper'
-import Overlay from './overlay'
-import proj from './proj'
-import setting from './setting'
+import CesiumWrapper from './cesium/viewer-wrapper'
+import browserPanel from './cesium/browser-panel'
+import setting from './cesium/setting'
+import Overlay from './overlay/overlay'
+
 import { mapState } from 'vuex'
 
 export default {
   components: {
     CesiumWrapper,
     Overlay,
-    proj,
+    browserPanel,
     setting
   },
   computed: {
@@ -73,11 +73,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
-  .map {
-    height: 100vh;
-    width: 100vw;
-    z-index: 0;
-  }
+.all {
+  height: 100vh;
+  width: 100vw;
+  z-index: 0;
 }
 </style>

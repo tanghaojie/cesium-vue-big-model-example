@@ -1,9 +1,15 @@
 const CopyPlugin = require('copy-webpack-plugin')
 const webpack = require('webpack')
+var path = require('path')
 
 module.exports = {
   publicPath: './',
   configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
+    },
     plugins: [
       new CopyPlugin({
         patterns: [

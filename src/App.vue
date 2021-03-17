@@ -1,74 +1,16 @@
 <template>
   <div id="app">
-    <cesium-wrapper
-      :timeline="cesiumOptions.timeline"
-      :animation="cesiumOptions.animation"
-      :baseLayerPicker="cesiumOptions.baseLayerPicker"
-      :fullscreenButton="cesiumOptions.fullscreenButton"
-      :geocoder="cesiumOptions.geocoder"
-      :homeButton="cesiumOptions.homeButton"
-      :infoBox="cesiumOptions.infoBox"
-      :sceneModePicker="cesiumOptions.sceneModePicker"
-      :selectionIndicator="cesiumOptions.selectionIndicator"
-      :navigationHelpButton="cesiumOptions.navigationHelpButton"
-      globalViewerMountKey="qq"
-      class="map"
-    >
-      <overlay>
-        <proj />
-      </overlay>
-    </cesium-wrapper>
-    <overlay
-      v-if="showSetting"
-      :position-mode="'fixed'"
-      :z-index="999"
-      :accept-pointer-events="true"
-    >
-      <setting :current="cesiumOptions" @optionChange="optionChange" />
-    </overlay>
+    <all />
   </div>
 </template>
 
 <script>
-import CesiumWrapper from './components/cesium-wrapper'
-import Overlay from './components/overlay'
-import proj from './components/proj'
-import setting from './components/setting'
-import { mapState } from 'vuex'
+import all from './components/all'
 
 export default {
   name: 'App',
   components: {
-    CesiumWrapper,
-    Overlay,
-    proj,
-    setting
-  },
-  computed: {
-    ...mapState('utils/cesium-setting', {
-      showSetting: state => state.showSetting
-    })
-  },
-  methods: {
-    optionChange(option) {
-      this.cesiumOptions[option.key] = option.value
-    }
-  },
-  data() {
-    return {
-      cesiumOptions: {
-        animation: false,
-        baseLayerPicker: false,
-        fullscreenButton: false,
-        geocoder: false,
-        homeButton: false,
-        infoBox: false,
-        sceneModePicker: false,
-        selectionIndicator: false,
-        timeline: false,
-        navigationHelpButton: false
-      }
-    }
+    all
   }
 }
 </script>
@@ -76,17 +18,11 @@ export default {
 <style lang="scss">
 html,
 body {
+  font-size: 16px;
   margin: 0;
   padding: 0;
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-#app {
-  .map {
-    height: 100vh;
-    width: 100vw;
-    z-index: 0;
-  }
 }
 </style>

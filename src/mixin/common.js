@@ -1,6 +1,6 @@
 // 除了用mixin，还可以用provided / inject来注入cesium对象
 const getRoot = $component =>
-  $component.$options.name !== 'JTCesiumWrapper'
+  $component.$options.name !== 'JTViewerWrapper'
     ? getRoot($component.$parent)
     : $component
 
