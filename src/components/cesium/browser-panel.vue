@@ -10,6 +10,7 @@
     <scrollbar class="scrollbar" height="calc(100% - 100px)" resize>
       <imangery-manager />
       <primitive-manager />
+      <terrain-manager />
     </scrollbar>
   </side-collapse>
 </template>
@@ -19,9 +20,16 @@ import sideCollapse from '../side-collapse/side-collapse'
 import scrollbar from '../scrollbar/scrollbar'
 import imangeryManager from './imagery-manager'
 import primitiveManager from './primitive-manager'
+import terrainManager from './terrain-manager'
 
 export default {
-  components: { imangeryManager, primitiveManager, sideCollapse, scrollbar }
+  components: {
+    imangeryManager,
+    primitiveManager,
+    sideCollapse,
+    scrollbar,
+    terrainManager
+  }
 }
 </script>
 

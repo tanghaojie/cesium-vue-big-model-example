@@ -2,7 +2,12 @@ import define from 'cesium/Source/Core/defined'
 import DeveloperError from 'cesium/Source/Core/DeveloperError'
 import * as Cesium from 'cesium'
 
-function logMousePositionMixin(viewer, options = {}) {
+function logMousePositionMixin(
+  viewer,
+  options = {
+    withHeight: false
+  }
+) {
   if (!define(viewer)) {
     console.log(options)
     throw new DeveloperError('viewer is required.')
@@ -10,7 +15,16 @@ function logMousePositionMixin(viewer, options = {}) {
   //此方法获取鼠标点击位置经纬度
   const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
   handler.setInputAction(function(e) {
-    const position = viewer.scene.pickPosition(e.position)
+    let position
+    if (options.withHeight) {
+      viewer.scene.globe.depthTestAgainstTerrain = true
+      position = viewer.scene.pickPosition(e.position)
+    } else {
+      position = viewer.scene.camera.pickEllipsoid(
+        e.position,
+        viewer.scene.globe.ellipsoid
+      )
+    }
     //将笛卡尔坐标转化为经纬度坐标
     const cartographic = Cesium.Cartographic.fromCartesian(position)
     const longitude = Cesium.Math.toDegrees(cartographic.longitude)
