@@ -2,11 +2,11 @@
   <div class="terrain-manager">
     <div class="type">
       <div class="title">
-        <div class="name">地形</div>
+        <div class="name">三维地形</div>
         <div class="op">
-          <div class="plus">
+          <!-- <div class="plus">
             <a-icon type="plus" />
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -18,7 +18,7 @@
             </a-menu-item>
           </a-menu>
           <a-button class="button">
-            点击选择地形 <a-icon type="down" />
+            {{ currentTerrainName || '点击选择地形' }} <a-icon type="down" />
           </a-button>
         </a-dropdown>
       </div>
@@ -36,10 +36,11 @@ export default {
     return {
       terrains: [
         {
-          name: '无',
-          terrainProvider: new Cesium.EllipsoidTerrainProvider({
+          name: '无地形',
+          terrainProviderName: 'EllipsoidTerrainProvider',
+          options: {
             tilingScheme: new Cesium.GeographicTilingScheme()
-          })
+          }
         },
         {
           name: '简单全球地形',
@@ -49,8 +50,34 @@ export default {
             // required for terrain lighting
             requestVertexNormals: true
           })
+        },
+        {
+          name: '测试高精地形001',
+          terrainProviderName: 'CesiumTerrainProvider',
+          options: {
+            url: 'http://117.139.247.104:60001/terrains/ssdx'
+          },
+          afterReady: function(viewer, success) {
+            console.log(555555555)
+            if (viewer && success) {
+              console.log(11111111111)
+              viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(
+                  102.81450979915033,
+                  32.105551886627644,
+                  10000
+                ),
+                orientation: {
+                  heading: Cesium.Math.toRadians(0),
+                  pitch: Cesium.Math.toRadians(-90),
+                  roll: 0.0
+                }
+              })
+            }
+          }
         }
-      ]
+      ],
+      currentTerrainName: ''
     }
   },
   mounted() {
@@ -62,8 +89,22 @@ export default {
     menuSelected({ key }) {
       const terrain = this.terrains[key]
       if (terrain && terrain.terrainProvider) {
+        console.log('terrainProvider')
         this.viewer.terrainProvider = terrain.terrainProvider
+      } else if (terrain && terrain.terrainProviderName) {
+        console.log('terrainProviderName')
+        const provider = new Cesium[terrain.terrainProviderName]({
+          ...terrain.options
+        })
+        if (terrain.afterReady) {
+          provider.readyPromise.then(success => {
+            console.log('qqqq', success)
+            terrain.afterReady(this.viewer, success)
+          })
+        }
+        this.viewer.terrainProvider = provider
       }
+      this.currentTerrainName = terrain.name || '<None>'
     }
   }
 }

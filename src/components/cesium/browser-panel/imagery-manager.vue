@@ -312,7 +312,38 @@ export default {
             },
             provider: 'UrlTemplateImageryProvider'
           }
-        ]
+        ],
+        {
+          imgUrl: 'img_c.png',
+          name: '测试高清影像001',
+          options: {
+            url: 'http://117.139.247.104:60001/images/ssdx/{z}/{x}/{y}.png',
+            fileExtension: 'png',
+            rectangle: Cesium.Rectangle.fromDegrees(
+              102.79329966318,
+              32.0931411982237,
+              102.83566593733,
+              32.111856902657
+            )
+          },
+          provider: 'UrlTemplateImageryProvider',
+          afterReady: function(viewer, success) {
+            if (viewer && success) {
+              viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(
+                  102.81450979915033,
+                  32.105551886627644,
+                  10000
+                ),
+                orientation: {
+                  heading: Cesium.Math.toRadians(0),
+                  pitch: Cesium.Math.toRadians(-90),
+                  roll: 0.0
+                }
+              })
+            }
+          }
+        }
       ]
     }
   },
@@ -357,9 +388,14 @@ export default {
       this.plusImageryModalVisible = true
     },
     addImagery(item) {
-      const layer = new Cesium.ImageryLayer(
-        new Cesium[item.provider]({ ...item.options })
-      )
+      const provider = new Cesium[item.provider]({ ...item.options })
+      if (item.afterReady) {
+        provider.readyPromise.then(success => {
+          item.afterReady(this.viewer, success)
+        })
+      }
+
+      const layer = new Cesium.ImageryLayer(provider)
       layer.name = item.name
       layer.uuid = Util.uuid()
       const ils = this.viewer.imageryLayers

@@ -95,8 +95,20 @@ export default {
       })
 
       this.add3DTileset({
-        name: '倾斜摄影',
+        name: '倾斜摄影模型',
         url: 'http://117.139.247.104:60001/models/3dtiles/yingxiu/tileset.json'
+      })
+
+      this.add3DTileset({
+        name: '简模001',
+        url:
+          'http://117.139.247.104:60001/models/3dtiles/shp_factory/tileset.json'
+      })
+
+      this.add3DTileset({
+        name: '简模002',
+        url:
+          'http://117.139.247.104:60001/models/3dtiles/apartment/tileset.json'
       })
     })
   },

@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     close() {
-      this.$store.dispatch('utils/cesium-setting/settingShown', false)
+      this.$store.dispatch('utils/layout/settingShown', false)
     },
     optionChange(key, value) {
       this.$emit('optionChange', { key, value })

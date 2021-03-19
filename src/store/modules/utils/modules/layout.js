@@ -1,6 +1,7 @@
 const getDefaultState = () => {
   return {
-    showSetting: false
+    showSetting: false,
+    showToolBar: true
   }
 }
 
@@ -12,12 +13,18 @@ const mutations = {
   },
   SET_SHOW_SETTING: (state, show) => {
     state.showSetting = show
+  },
+  SET_SHOW_TOOL_BAR: (state, show) => {
+    state.showToolBar = show
   }
 }
 
 const actions = {
   settingShown({ commit, state }, show = true) {
     commit('SET_SHOW_SETTING', show)
+  },
+  toolBarShown({ commit, state }, show = true) {
+    commit('SET_SHOW_TOOL_BAR', show)
   }
 }
 

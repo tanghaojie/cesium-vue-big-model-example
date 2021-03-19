@@ -4,6 +4,24 @@ var path = require('path')
 
 module.exports = {
   publicPath: './',
+  chainWebpack: config => {
+    config.module
+      .rule('svg')
+      .exclude.add(function() {
+        return 'src/components/icon/svgs'
+      })
+      .end()
+
+    config.module
+      .rule('jsvgicon')
+      .test(/\.svg$/)
+      .include.add(function() {
+        return 'src/components/icon/svgs'
+      })
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+  },
   configureWebpack: {
     resolve: {
       alias: {

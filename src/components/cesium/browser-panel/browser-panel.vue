@@ -3,7 +3,12 @@
     <div style="height: 100px; background-color: transparent;">
       <a-icon
         type="setting"
-        @click="$store.dispatch('utils/cesium-setting/settingShown')"
+        @click="$store.dispatch('utils/layout/settingShown')"
+        style="font-size: 24px; color: white; padding: 5px;"
+      />
+      <a-icon
+        type="menu"
+        @click="$store.dispatch('utils/layout/toolBarShown', !showToolBar)"
         style="font-size: 24px; color: white; padding: 5px;"
       />
     </div>
@@ -16,11 +21,12 @@
 </template>
 
 <script>
-import sideCollapse from '../side-collapse/side-collapse'
-import scrollbar from '../scrollbar/scrollbar'
+import sideCollapse from '../../side-collapse/side-collapse'
+import scrollbar from '../../scrollbar/scrollbar'
 import imangeryManager from './imagery-manager'
 import primitiveManager from './primitive-manager'
 import terrainManager from './terrain-manager'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -29,6 +35,11 @@ export default {
     sideCollapse,
     scrollbar,
     terrainManager
+  },
+  computed: {
+    ...mapState('utils/layout', {
+      showToolBar: state => state.showToolBar
+    })
   }
 }
 </script>

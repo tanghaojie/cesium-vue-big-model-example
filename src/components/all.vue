@@ -1,5 +1,5 @@
 <template>
-  <div class="all">
+  <div class="all" :style="{ '--tool-bar-height': toolBarHeight + 'px' }">
     <cesium-wrapper
       :timeline="cesiumOptions.timeline"
       :animation="cesiumOptions.animation"
@@ -12,9 +12,18 @@
       :selectionIndicator="cesiumOptions.selectionIndicator"
       :navigationHelpButton="cesiumOptions.navigationHelpButton"
       globalViewerMountKey="qq"
+      globalCesiumMountKey="cc"
+      class="cesium-wrapper"
     >
-      <overlay>
-        <browser-panel />
+      <overlay position-mode="fixed" class="over">
+        <div class="tool-bar">
+          <tool-bar ref="toolBar" v-show="showToolBar" />
+          <resize-observer @notify="handleResize" />
+        </div>
+        <div class="content-view">
+          <browser-panel />
+          <location-bar />
+        </div>
       </overlay>
     </cesium-wrapper>
     <overlay
@@ -29,11 +38,12 @@
 </template>
 
 <script>
-import CesiumWrapper from './cesium/viewer-wrapper'
-import browserPanel from './cesium/browser-panel'
-import setting from './cesium/setting'
+import CesiumWrapper from './cesium/viewer-wrapper/viewer-wrapper'
+import browserPanel from './cesium/browser-panel/browser-panel.vue'
+import toolBar from './cesium/tool-bar/tool-bar'
+import locationBar from './cesium/location-bar/location-bar'
+import setting from './cesium/setting/setting'
 import Overlay from './overlay/overlay'
-
 import { mapState } from 'vuex'
 
 export default {
@@ -41,16 +51,22 @@ export default {
     CesiumWrapper,
     Overlay,
     browserPanel,
-    setting
+    setting,
+    toolBar,
+    locationBar
   },
   computed: {
-    ...mapState('utils/cesium-setting', {
-      showSetting: state => state.showSetting
+    ...mapState('utils/layout', {
+      showSetting: state => state.showSetting,
+      showToolBar: state => state.showToolBar
     })
   },
   methods: {
     optionChange(option) {
       this.cesiumOptions[option.key] = option.value
+    },
+    handleResize({ height }) {
+      this.toolBarHeight = height
     }
   },
   data() {
@@ -66,8 +82,12 @@ export default {
         selectionIndicator: false,
         timeline: false,
         navigationHelpButton: false
-      }
+      },
+      toolBarHeight: 100
     }
+  },
+  mounted() {
+    this.toolBarHeight = this.$refs.toolBar.$el.clientHeight
   }
 }
 </script>
@@ -77,5 +97,22 @@ export default {
   height: 100vh;
   width: 100vw;
   z-index: 0;
+  padding-top: var(--tool-bar-height); //same as tool-bar height
+
+  .cesium-wrapper {
+    position: relative;
+    .over {
+      display: flex;
+      flex-direction: column;
+      .tool-bar {
+        position: relative;
+        width: 100%;
+      }
+      .content-view {
+        position: relative;
+        flex: 1 1 auto;
+      }
+    }
+  }
 }
 </style>

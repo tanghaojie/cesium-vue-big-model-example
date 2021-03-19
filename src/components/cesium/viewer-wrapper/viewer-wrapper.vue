@@ -7,7 +7,7 @@
 <script>
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import * as Cesium from 'cesium'
-import logMousePositionMixin from '../../mixin/cesium/mixins/logMousePositionMixin'
+import logMousePositionMixin from '../../../mixin/cesium/mixins/logMousePositionMixin'
 
 export default {
   name: 'JTViewerWrapper',
@@ -535,7 +535,20 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
       this.initCesiumDefault()
 
       const viewer = this.initCesium('cesiumContainer')
-      viewer.extend(logMousePositionMixin, { withHeight: false })
+      viewer.extend(logMousePositionMixin, { withHeight: true })
+      viewer.extend(Cesium.viewerCesiumInspectorMixin)
+
+// viewer.camera.positionCartographic.height.toFixed(2) // camera height
+      viewer.camera.percentageChanged = 0.01
+      viewer.camera.changed.addEventListener(function() {
+        console.log(1111)
+        const pos = viewer.camera.positionCartographic
+        console.log(pos)
+        console.log(
+          Cesium.Math.toDegrees(pos.longitude),
+          Cesium.Math.toDegrees(pos.latitude)
+        )
+      })
 
       return viewer
     },
