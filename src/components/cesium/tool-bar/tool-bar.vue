@@ -31,6 +31,7 @@
               :key="j"
               @click="itemClicked(index, i, j)"
               class="item j-flex j-flex-column j-justify-content-center j-align-items-center"
+              :class="item.active && item.active() ? 'active' : ''"
             >
               <div class="icon">
                 <svg-icon :name="item.icon" />
@@ -49,15 +50,15 @@
 <script>
 import common from '@/mixin/common'
 import { flyToEarth, flyToChina } from '@/libs/cesium/flyTo/flyTo.js'
+import { mapState } from 'vuex'
 
 export default {
-  components: {},
   props: {},
   data() {
     return {
       menus: [
         {
-          name: '基本',
+          name: '视图',
           groups: [
             {
               name: '视角',
@@ -73,6 +74,47 @@ export default {
                   clicked: flyToChina
                 }
               ]
+            },
+            {
+              name: '状态栏',
+              items: [
+                {
+                  name: '视角坐标',
+                  icon: 'camera2',
+                  clicked: () => {
+                    this.$store.dispatch('utils/layout/locationBar', {
+                      showCameraLocation: !this.locationBar.showCameraLocation
+                    })
+                  },
+                  active: () => {
+                    return this.locationBar.showCameraLocation
+                  }
+                },
+                {
+                  name: '鼠标坐标',
+                  icon: 'click',
+                  clicked: () => {
+                    this.$store.dispatch('utils/layout/locationBar', {
+                      showMouseLocation: !this.locationBar.showMouseLocation
+                    })
+                  },
+                  active: () => {
+                    return this.locationBar.showMouseLocation
+                  }
+                },
+                {
+                  name: 'FPS',
+                  icon: 'fps',
+                  clicked: () => {
+                    this.$store.dispatch('utils/layout/locationBar', {
+                      showFPS: !this.locationBar.showFPS
+                    })
+                  },
+                  active: () => {
+                    return this.locationBar.showFPS
+                  }
+                }
+              ]
             }
           ]
         }
@@ -81,7 +123,11 @@ export default {
     }
   },
   mixins: [common],
-  computed: {},
+  computed: {
+    ...mapState('utils/layout', {
+      locationBar: state => state.locationBar
+    })
+  },
   watch: {},
   created() {},
   mounted() {
@@ -162,7 +208,12 @@ export default {
           margin-top: 5px;
         }
 
+        .active {
+          color: rgb(82, 177, 214);
+        }
+
         .item {
+          cursor: pointer;
           margin: 0 5px;
           padding: 0 12px;
           &:hover {
