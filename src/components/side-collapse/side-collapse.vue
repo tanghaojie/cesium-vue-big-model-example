@@ -57,8 +57,11 @@
 
 <script>
 export default {
-  components: {},
   props: {
+    defaultPin: {
+      type: Boolean,
+      default: true
+    },
     width: {
       type: String,
       default: '200px',
@@ -78,7 +81,7 @@ export default {
   data() {
     return {
       hover: false,
-      pin: true
+      pin: false
     }
   },
   computed: {
@@ -86,8 +89,9 @@ export default {
       return this.pin || this.hover
     }
   },
-  mounted() {},
-  methods: {}
+  mounted() {
+    this.pin = this.defaultPin
+  }
 }
 </script>
 

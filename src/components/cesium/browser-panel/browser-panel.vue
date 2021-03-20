@@ -1,5 +1,5 @@
 <template>
-  <side-collapse class="side" width="300px">
+  <side-collapse :default-pin="false" class="side" width="300px">
     <div style="height: 100px; background-color: transparent;">
       <a-icon
         type="setting"

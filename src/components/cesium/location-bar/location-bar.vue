@@ -160,7 +160,6 @@ export default {
       if (this.percentageChanged > 1 || this.percentageChanged < 0) {
         this.percentageChanged = 0.1
       }
-
       viewer.camera.percentageChanged = this.percentageChanged
       const that = this
       this.unbindCameraLocation = viewer.camera.changed.addEventListener(
