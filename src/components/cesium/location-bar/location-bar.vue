@@ -58,12 +58,12 @@ export default {
     // 范围[0,1]，数字越小越精确，但影响性能
     percentageChanged: {
       type: Number,
-      default: 0.1
+      default: undefined
     },
     // fps刷新速度（毫秒）
     fpsRate: {
       type: Number,
-      default: 500
+      default: 1000
     }
   },
   mixins: [common],
@@ -156,11 +156,12 @@ export default {
   methods: {
     bindCameraLocation() {
       const { viewer } = this
-
-      if (this.percentageChanged > 1 || this.percentageChanged < 0) {
-        this.percentageChanged = 0.1
+      if (this.percentageChanged) {
+        if (this.percentageChanged > 1 || this.percentageChanged < 0) {
+          this.percentageChanged = 0.1
+        }
+        viewer.camera.percentageChanged = this.percentageChanged
       }
-      viewer.camera.percentageChanged = this.percentageChanged
       const that = this
       this.unbindCameraLocation = viewer.camera.changed.addEventListener(
         function() {

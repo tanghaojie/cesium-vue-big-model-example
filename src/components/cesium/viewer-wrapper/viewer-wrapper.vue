@@ -7,6 +7,7 @@
 <script>
 import 'cesium/Build/Cesium/Widgets/widgets.css'
 import * as Cesium from 'cesium'
+import { mapState } from 'vuex'
 import logMousePositionMixin from '../../../mixin/cesium/mixins/logMousePositionMixin'
 
 export default {
@@ -460,7 +461,14 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
     },
     UTCoffset() {
       return -new Date().getTimezoneOffset()
-    }
+    },
+    ...mapState('cesium/nature', {
+      showSun: state => state.showSun,
+      showMoon: state => state.showMoon,
+      showSkyAtmosphere: state => state.showSkyAtmosphere,
+      enableLighting: state => state.enableLighting,
+      showSkyBox: state => state.showSkyBox
+    })
   },
   methods: {
     initCesiumDefault() {
@@ -531,12 +539,44 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
       return viewer
     },
 
+    initStoreValue() {
+      const { viewer } = this
+      // Sun
+      if (!viewer.scene.sun) {
+        viewer.scene.sun = Cesium.Sun()
+      }
+      viewer.scene.sun.show = this.showSun
+
+      // Moon
+      if (!viewer.scene.moon) {
+        viewer.scene.moon = Cesium.Moon()
+      }
+      viewer.scene.moon.show = this.showMoon
+
+      // SkyAtmosphere
+      if (!viewer.scene.skyAtmosphere) {
+        viewer.scene.skyAtmosphere = Cesium.SkyAtmosphere()
+      }
+      viewer.scene.skyAtmosphere.show = this.showSkyAtmosphere
+
+      // Lighting
+      viewer.scene.globe.enableLighting = this.enableLighting
+
+      // SkyBox
+      // if (!viewer.scene.skyAtmosphere) {
+      //   viewer.scene.skyAtmosphere = Cesium.SkyAtmosphere()
+      // }
+      viewer.scene.skyBox.show = this.showSkyBox
+    },
+
     init() {
       this.initCesiumDefault()
 
       const viewer = this.initCesium('cesiumContainer')
       // viewer.extend(logMousePositionMixin, { withHeight: true })
       viewer.extend(Cesium.viewerCesiumInspectorMixin)
+
+      this.initStoreValue()
 
       return viewer
     },

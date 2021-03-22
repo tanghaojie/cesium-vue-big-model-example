@@ -74,7 +74,7 @@
 <script>
 import common from '@/mixin/common'
 import cameraChangeRate from './camera-change-rate/camera-change-rate'
-import { flyToEarth, flyToChina } from '@/libs/cesium/fly-to/fly-to.js'
+import { flyToEarth, flyToChina } from '@/libs/cesium/fly-to'
 import { mapState } from 'vuex'
 
 export default {
@@ -108,9 +108,7 @@ export default {
                   name: '视角坐标',
                   icon: 'camera2',
                   dropdown: {
-                    clicked: () => {
-                      console.log('dropdownClicked')
-                    },
+                    clicked: () => {},
                     componentName: 'cameraChangeRate'
                   },
                   clicked: () => {
@@ -149,6 +147,88 @@ export default {
               ]
             }
           ]
+        },
+        {
+          name: '效果',
+          groups: [
+            {
+              name: '自然环境',
+              items: [
+                {
+                  name: '太阳',
+                  icon: 'earth',
+                  clicked: () => {
+                    this.$store.dispatch(
+                      'cesium/nature/switchSunShown',
+                      this.viewer
+                    )
+                  },
+                  active: () => this.showSun
+                },
+                {
+                  name: '月亮',
+                  icon: 'earth',
+                  clicked: () => {
+                    this.$store.dispatch(
+                      'cesium/nature/switchMoonShown',
+                      this.viewer
+                    )
+                  },
+                  active: () => this.showMoon
+                },
+                {
+                  name: '大气层',
+                  icon: 'earth',
+                  clicked: () => {
+                    this.$store.dispatch(
+                      'cesium/nature/switchSkyAtmosphereShown',
+                      this.viewer
+                    )
+                  },
+                  active: () => this.showSkyAtmosphere
+                },
+                {
+                  name: '日照阴影',
+                  icon: 'earth',
+                  clicked: () => {
+                    this.$store.dispatch(
+                      'cesium/nature/switchGlobeLightingEnable',
+                      this.viewer
+                    )
+                  },
+                  active: () => this.enableLighting
+                },
+                {
+                  name: '天空盒',
+                  icon: 'earth',
+                  clicked: () => {
+                    this.$store.dispatch(
+                      'cesium/nature/switchSkyBoxShown',
+                      this.viewer
+                    )
+                  },
+                  active: () => this.showSkyBox
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: '其他',
+          groups: [
+            {
+              name: 'Cesium',
+              items: [
+                {
+                  name: '设置',
+                  icon: 'setting',
+                  clicked: v => {
+                    this.$store.dispatch('utils/layout/settingShown')
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       currentMenu: 0,
@@ -165,6 +245,13 @@ export default {
   computed: {
     ...mapState('utils/layout', {
       locationBar: state => state.locationBar
+    }),
+    ...mapState('cesium/nature', {
+      showSun: state => state.showSun,
+      showMoon: state => state.showMoon,
+      showSkyAtmosphere: state => state.showSkyAtmosphere,
+      enableLighting: state => state.enableLighting,
+      showSkyBox: state => state.showSkyBox
     })
   },
   watch: {},
@@ -179,7 +266,6 @@ export default {
       this.currentMenu = index
     },
     toolBarClick() {
-      console.log('toolBarClick')
       this.dropdownPanel.show = false
     },
     itemClicked(index, gIndex, iIndex) {

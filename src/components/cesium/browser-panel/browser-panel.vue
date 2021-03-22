@@ -2,11 +2,6 @@
   <side-collapse :default-pin="false" class="side" width="300px">
     <div style="height: 100px; background-color: transparent;">
       <a-icon
-        type="setting"
-        @click="$store.dispatch('utils/layout/settingShown')"
-        style="font-size: 24px; color: white; padding: 5px;"
-      />
-      <a-icon
         type="menu"
         @click="$store.dispatch('utils/layout/toolBarShown', !showToolBar)"
         style="font-size: 24px; color: white; padding: 5px;"

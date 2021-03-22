@@ -4,8 +4,14 @@
     <a-slider
       v-model="value"
       :min="0"
-      :max="1"
+      :max="0.5"
       :step="0.001"
+      reverse
+      :tipFormatter="
+        val => {
+          return ((0.5 - val) * 200).toFixed(0) + '%'
+        }
+      "
       @afterChange="afterChage"
     />
   </div>
@@ -32,7 +38,6 @@ export default {
   },
   methods: {
     afterChage(val) {
-      console.log('afterChange', val)
       this.viewer.camera.percentageChanged = val
     }
   }
