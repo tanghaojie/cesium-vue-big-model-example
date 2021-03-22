@@ -83,22 +83,20 @@ export default {
   mounted() {
     this.cesiumPromise.then(({ viewer }) => {
       this.viewer = viewer
+      this.menuSelected({ key: 1 })
     })
   },
   methods: {
     menuSelected({ key }) {
       const terrain = this.terrains[key]
       if (terrain && terrain.terrainProvider) {
-        console.log('terrainProvider')
         this.viewer.terrainProvider = terrain.terrainProvider
       } else if (terrain && terrain.terrainProviderName) {
-        console.log('terrainProviderName')
         const provider = new Cesium[terrain.terrainProviderName]({
           ...terrain.options
         })
         if (terrain.afterReady) {
           provider.readyPromise.then(success => {
-            console.log('qqqq', success)
             terrain.afterReady(this.viewer, success)
           })
         }

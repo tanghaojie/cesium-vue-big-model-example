@@ -94,6 +94,17 @@ export default {
         show: false
       })
 
+      this.addGltf({
+        name: '单体化',
+        url:
+          'http://117.139.247.104:60001/models/gltfs/for_single/for_single_use.gltf',
+        modelMatrix: Cesium.Transforms.headingPitchRollToFixedFrame(
+          Cesium.Cartesian3.fromDegrees(103.61225, 30.9559, 665.5),
+          new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(108), 0, 0)
+        ),
+        show: false
+      })
+
       this.add3DTileset({
         name: '倾斜摄影模型',
         url: 'http://117.139.247.104:60001/models/3dtiles/yingxiu/tileset.json'
@@ -149,7 +160,7 @@ export default {
     },
     add3DTileset(option) {
       const model = new Cesium.Cesium3DTileset({
-        url: option.url
+        ...option
       })
       model.name = option.name
       model.uuid = Util.uuid()
@@ -159,8 +170,7 @@ export default {
     },
     addGltf(option) {
       const model = Cesium.Model.fromGltf({
-        url: option.url,
-        modelMatrix: option.modelMatrix
+        ...option
       })
       model.name = option.name
       model.uuid = Util.uuid()
