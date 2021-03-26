@@ -72,9 +72,21 @@
 </template>
 
 <script>
+import * as Cesium from 'cesium'
 import common from '@/mixin/common'
 import cameraChangeRate from './camera-change-rate/camera-change-rate'
 import { flyToEarth, flyToChina } from '@/libs/cesium/fly-to'
+import {
+  hightlight3DTileFeature,
+  removeHightlight
+} from '@/libs/cesium/highlight'
+import {
+  addClassify,
+  removeClassified,
+  addInvertClassification,
+  removeInvertClassification,
+  addYingXiuZhenZhongYiZhiClassificationPrimitive
+} from '@/libs/cesium/classification'
 import { mapState } from 'vuex'
 
 export default {
@@ -158,10 +170,9 @@ export default {
                   name: '太阳',
                   icon: 'earth',
                   clicked: () => {
-                    this.$store.dispatch(
-                      'cesium/nature/switchSunShown',
-                      this.viewer
-                    )
+                    this.$store.dispatch('cesium/nature/switchSunShown', {
+                      viewer: this.viewer
+                    })
                   },
                   active: () => this.showSun
                 },
@@ -169,10 +180,9 @@ export default {
                   name: '月亮',
                   icon: 'earth',
                   clicked: () => {
-                    this.$store.dispatch(
-                      'cesium/nature/switchMoonShown',
-                      this.viewer
-                    )
+                    this.$store.dispatch('cesium/nature/switchMoonShown', {
+                      viewer: this.viewer
+                    })
                   },
                   active: () => this.showMoon
                 },
@@ -182,7 +192,9 @@ export default {
                   clicked: () => {
                     this.$store.dispatch(
                       'cesium/nature/switchSkyAtmosphereShown',
-                      this.viewer
+                      {
+                        viewer: this.viewer
+                      }
                     )
                   },
                   active: () => this.showSkyAtmosphere
@@ -193,7 +205,9 @@ export default {
                   clicked: () => {
                     this.$store.dispatch(
                       'cesium/nature/switchGlobeLightingEnable',
-                      this.viewer
+                      {
+                        viewer: this.viewer
+                      }
                     )
                   },
                   active: () => this.enableLighting
@@ -202,12 +216,110 @@ export default {
                   name: '天空盒',
                   icon: 'earth',
                   clicked: () => {
-                    this.$store.dispatch(
-                      'cesium/nature/switchSkyBoxShown',
-                      this.viewer
-                    )
+                    this.$store.dispatch('cesium/nature/switchSkyBoxShown', {
+                      viewer: this.viewer
+                    })
                   },
                   active: () => this.showSkyBox
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: '工具',
+          groups: [
+            {
+              name: '3DTiles',
+              init: params => {
+                addYingXiuZhenZhongYiZhiClassificationPrimitive(params)
+              },
+              items: [
+                {
+                  name: '高亮瓦片',
+                  icon: 'setting',
+                  clicked: params => {
+                    this.$store.dispatch(
+                      'cesium/tool-bar/switchHightlight3DTileFeatureItemActive'
+                    )
+                    const { viewer, item } = params
+                    if (item.clickedResult) {
+                      removeHightlight()
+                      item.clickedResult =
+                        item.clickedResult && item.clickedResult.destroy()
+                      item.clickedResult = undefined
+                      return
+                    }
+                    params.options = {
+                      color: Cesium.Color.YELLOW.withAlpha(0.5)
+                    }
+                    return hightlight3DTileFeature(params)
+                  },
+                  active: () => this.hightlight3DTileFeatureItemActive
+                },
+                {
+                  name: '单体化(滑动染色)',
+                  icon: 'setting',
+                  clicked: params => {
+                    this.$store.dispatch(
+                      'cesium/tool-bar/switchClassifyItemActive'
+                    )
+                    const { viewer, item } = params
+                    if (item.clickedResult) {
+                      removeClassified()
+                      item.clickedResult =
+                        item.clickedResult && item.clickedResult.destroy()
+                      item.clickedResult = undefined
+                      return
+                    }
+                    params.viewer.camera.flyTo({
+                      destination: Cesium.Cartesian3.fromDegrees(
+                        103.4862789722867,
+                        31.0581577660983,
+                        2500
+                      ),
+                      orientation: {
+                        heading: Cesium.Math.toRadians(0),
+                        pitch: Cesium.Math.toRadians(-90),
+                        roll: 0.0
+                      },
+                      duration: 1
+                    })
+                    return addClassify(params)
+                  },
+                  active: () => this.classifyItemActive
+                },
+                {
+                  name: '单体化(点击高亮)',
+                  icon: 'setting',
+                  clicked: params => {
+                    this.$store.dispatch(
+                      'cesium/tool-bar/switchInvertClassifyItemActive'
+                    )
+                    const { viewer, item } = params
+                    if (item.clickedResult) {
+                      removeInvertClassification(params)
+                      item.clickedResult =
+                        item.clickedResult && item.clickedResult.destroy()
+                      item.clickedResult = undefined
+                      return
+                    }
+                    params.viewer.camera.flyTo({
+                      destination: Cesium.Cartesian3.fromDegrees(
+                        103.4862789722867,
+                        31.0581577660983,
+                        2500
+                      ),
+                      orientation: {
+                        heading: Cesium.Math.toRadians(0),
+                        pitch: Cesium.Math.toRadians(-90),
+                        roll: 0.0
+                      },
+                      duration: 1
+                    })
+                    return addInvertClassification(params)
+                  },
+                  active: () => this.invertClassifyItemActive
                 }
               ]
             }
@@ -222,8 +334,24 @@ export default {
                 {
                   name: '设置',
                   icon: 'setting',
-                  clicked: v => {
+                  clicked: params => {
                     this.$store.dispatch('utils/layout/settingShown')
+                  }
+                },
+                {
+                  name: 'API文档',
+                  icon: 'setting',
+                  clicked: params => {
+                    window.open(
+                      'https://cesium.com/docs/cesiumjs-ref-doc/index.html'
+                    )
+                  }
+                },
+                {
+                  name: '官方Demo',
+                  icon: 'setting',
+                  clicked: params => {
+                    window.open('https://sandcastle.cesium.com/')
                   }
                 }
               ]
@@ -252,16 +380,38 @@ export default {
       showSkyAtmosphere: state => state.showSkyAtmosphere,
       enableLighting: state => state.enableLighting,
       showSkyBox: state => state.showSkyBox
+    }),
+    ...mapState('cesium/tool-bar', {
+      hightlight3DTileFeatureItemActive: state =>
+        state.hightlight3DTileFeatureItemActive,
+      classifyItemActive: state => state.classifyItemActive,
+      invertClassifyItemActive: state => state.invertClassifyItemActive
     })
   },
   watch: {},
   created() {},
   mounted() {
+    const that = this
     this.cesiumPromise.then(({ viewer }) => {
-      this.viewer = viewer
+      that.viewer = viewer
+      that.menuInit({ viewer: viewer })
     })
   },
   methods: {
+    menuInit(params) {
+      this.menus.forEach(menu => {
+        menu.groups.forEach(group => {
+          if (group.init) {
+            group.init(params)
+          }
+          group.items.forEach(item => {
+            if (item.init) {
+              item.init(params)
+            }
+          })
+        })
+      })
+    },
     selectMenu(index) {
       this.currentMenu = index
     },
@@ -283,7 +433,7 @@ export default {
       }
 
       if (item.clicked) {
-        item.clicked(this.viewer)
+        item.clickedResult = item.clicked({ viewer: this.viewer, item: item })
       }
     },
     dropdownClicked(index, gIndex, iIndex) {

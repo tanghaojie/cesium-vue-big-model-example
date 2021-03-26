@@ -32,7 +32,8 @@ const mutations = {
 }
 
 const actions = {
-  switchSunShown({ commit, state }, viewer) {
+  switchSunShown({ commit, state }, params) {
+    const { viewer } = params
     if (!viewer.scene.sun) {
       viewer.scene.sun = Cesium.Sun()
     }
@@ -40,7 +41,8 @@ const actions = {
     viewer.scene.sun.show = switchTo
     commit('SET_SHOW_SUN', switchTo)
   },
-  switchMoonShown({ commit, state }, viewer) {
+  switchMoonShown({ commit, state }, params) {
+    const { viewer } = params
     if (!viewer.scene.moon) {
       viewer.scene.moon = Cesium.Moon()
     }
@@ -48,7 +50,8 @@ const actions = {
     viewer.scene.moon.show = switchTo
     commit('SET_SHOW_MOON', switchTo)
   },
-  switchSkyAtmosphereShown({ commit, state }, viewer) {
+  switchSkyAtmosphereShown({ commit, state }, params) {
+    const { viewer } = params
     if (!viewer.scene.skyAtmosphere) {
       viewer.scene.skyAtmosphere = Cesium.SkyAtmosphere()
     }
@@ -56,12 +59,14 @@ const actions = {
     viewer.scene.skyAtmosphere.show = switchTo
     commit('SET_SHOW_SKY_ATMOSPHERE', switchTo)
   },
-  switchGlobeLightingEnable({ commit, state }, viewer) {
+  switchGlobeLightingEnable({ commit, state }, params) {
+    const { viewer } = params
     const switchTo = !state.enableLighting
     viewer.scene.globe.enableLighting = switchTo
     commit('SET_ENABLE_LIGHT', switchTo)
   },
-  switchSkyBoxShown({ commit, state }, viewer) {
+  switchSkyBoxShown({ commit, state }, params) {
+    const { viewer } = params
     // if (!viewer.scene.skyAtmosphere) {
     //   viewer.scene.skyAtmosphere = Cesium.SkyAtmosphere()
     // }

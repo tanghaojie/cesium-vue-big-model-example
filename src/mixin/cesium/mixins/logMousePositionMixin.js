@@ -24,6 +24,7 @@ function logMousePositionMixin(
         viewer.scene.globe.ellipsoid
       )
     }
+    console.log(position)
     const cartographic = Cesium.Cartographic.fromCartesian(position)
     const longitude = Cesium.Math.toDegrees(cartographic.longitude)
     const latitude = Cesium.Math.toDegrees(cartographic.latitude)

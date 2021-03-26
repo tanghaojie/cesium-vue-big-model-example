@@ -1,6 +1,7 @@
 import * as Cesium from 'cesium'
 
-const flyToEarth = function(viewer) {
+const flyToEarth = function(params) {
+  const { viewer } = params
   viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(110, 16, 20000000),
     orientation: {
@@ -12,7 +13,8 @@ const flyToEarth = function(viewer) {
   })
 }
 
-const flyToChina = function(viewer) {
+const flyToChina = function(params) {
+  const { viewer } = params
   viewer.camera.flyTo({
     destination: Cesium.Cartesian3.fromDegrees(109, 33.2, 5000000),
     orientation: {

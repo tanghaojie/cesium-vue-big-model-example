@@ -573,8 +573,8 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
       this.initCesiumDefault()
 
       const viewer = this.initCesium('cesiumContainer')
-      viewer.extend(logMousePositionMixin, { withHeight: true })
-      viewer.extend(Cesium.viewerCesiumInspectorMixin)
+      // viewer.extend(logMousePositionMixin, { withHeight: true })
+      // viewer.extend(Cesium.viewerCesiumInspectorMixin)
 
       this.initStoreValue()
 

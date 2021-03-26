@@ -58,11 +58,17 @@
 import * as Cesium from 'cesium'
 import common from '@/mixin/common'
 import Util from '@/utils/Util'
+import { PRIMITIVE_MANAGER_NAME_FLAG, PRIMITIVE_FLAG_NAME } from './common'
 import primitiveCenter from '@/utils/cesium/primitive-center'
 
 export default {
   components: {},
-  props: {},
+  props: {
+    onlyShowSelfManagedPrimitive: {
+      type: Boolean,
+      default: true
+    }
+  },
   mixins: [common],
   data() {
     return {
@@ -81,8 +87,8 @@ export default {
     this.cesiumPromise.then(({ viewer }) => {
       this.viewer = viewer
 
-      const primitives = this.viewer.scene.primitives
-      primitives.removeAll()
+      // const primitives = this.viewer.scene.primitives
+      //primitives.removeAll()
 
       this.addGltf({
         name: '精模',
@@ -107,7 +113,8 @@ export default {
 
       this.add3DTileset({
         name: '倾斜摄影模型',
-        url: 'http://117.139.247.104:60001/models/3dtiles/yingxiu/tileset.json'
+        url: 'http://117.139.247.104:60001/models/3dtiles/yingxiu/tileset.json',
+        show: true
       })
 
       this.add3DTileset({
@@ -131,6 +138,16 @@ export default {
       const len = pris.length
       for (let i = len - 1; i >= 0; --i) {
         const model = pris.get(i)
+
+        const flag = model[PRIMITIVE_FLAG_NAME]
+
+        if (
+          this.onlyShowSelfManagedPrimitive &&
+          flag !== PRIMITIVE_MANAGER_NAME_FLAG
+        ) {
+          continue
+        }
+
         this.models.push({
           name: model.name || '<NoneName>',
           uuid: model.uuid || '<NoneUuid>',
@@ -162,6 +179,7 @@ export default {
       const model = new Cesium.Cesium3DTileset({
         ...option
       })
+      model[PRIMITIVE_FLAG_NAME] = PRIMITIVE_MANAGER_NAME_FLAG
       model.name = option.name
       model.uuid = Util.uuid()
       model.show = option.show
@@ -172,6 +190,7 @@ export default {
       const model = Cesium.Model.fromGltf({
         ...option
       })
+      model[PRIMITIVE_FLAG_NAME] = PRIMITIVE_MANAGER_NAME_FLAG
       model.name = option.name
       model.uuid = Util.uuid()
       model.show = option.show
@@ -189,6 +208,7 @@ export default {
       const model = primitives.get(this.models[index].cesiumIndex)
       const location = primitiveCenter(model)
       this.viewer.camera.flyTo({
+        duration: 1,
         destination: Cesium.Cartesian3.fromDegrees(
           location.longitude,
           location.latitude - 0.001,
