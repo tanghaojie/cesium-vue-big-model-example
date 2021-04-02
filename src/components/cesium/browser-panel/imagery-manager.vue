@@ -1,70 +1,103 @@
 <template>
   <div class="imagery-manager">
-    <div class="type">
-      <div class="title">
-        <div class="name">影像</div>
-        <div class="op">
-          <div class="plus" @click="plusImageries">
+    <div class="type px-4 pb-4">
+      <div class="title text-lg text-white flex flex-row">
+        <div class="name flex-1">影像</div>
+        <div class="op flex flex-row flex-grow-0 flex-shrink-0">
+          <div class="plus cursor-pointer" @click="plusImageries">
             <a-icon type="plus" />
           </div>
-          <div class="sync" @click="syncImageries">
+          <div class="sync cursor-pointer ml-3" @click="syncImageries">
             <a-icon type="sync" />
           </div>
         </div>
       </div>
       <div class="list">
-        <div v-for="(item, index) in imageries" :key="index" class="item">
+        <div
+          v-for="(item, index) in imageries"
+          :key="index"
+          class="item flex flex-row justify-center items-center text-white py-2"
+        >
           <a-switch
             size="small"
             :checked="item.checked"
             @change="(checked, e) => changeImageryShow(index, checked, e)"
           />
-          <div class="layer-name">{{ item.name }}</div>
-          <div class="remove" @click="removeImagery(index)">
+          <div class="layer-name mx-3 flex-1 cursor-default">
+            {{ item.name }}
+          </div>
+          <div class="remove cursor-pointer" @click="settingImagery(index)">
+            <a-icon type="setting" />
+          </div>
+          <div class="remove cursor-pointer ml-2" @click="removeImagery(index)">
             <a-icon type="close" />
           </div>
         </div>
       </div>
     </div>
 
+    <layerOperate
+      v-if="layerOperate.show"
+      :a="layerOperate.init.alpha"
+      :b="layerOperate.init.brightness"
+      :c="layerOperate.init.contrast"
+      :h="layerOperate.init.hue"
+      :s="layerOperate.init.saturation"
+      :cb="layerOperateCallback"
+      @close="closeLayerOperate"
+    />
+
     <a-modal
       v-model="plusImageryModalVisible"
       title="选择影像服务"
       :footer="null"
-      class="imagery-manager-modal"
+      class="imagery-manager-modal flex flex-wrap"
     >
       <div class="imagery-sources">
         <div
           v-for="(item, index) in imagerySources"
           :key="index"
-          :class="Array.isArray(item) ? 'imagery-array' : 'imagery-item'"
+          :class="Array.isArray(item) ? 'px-5' : 'p-2 w-20'"
         >
-          <div v-if="Array.isArray(item)" class="array">
+          <div
+            v-if="Array.isArray(item)"
+            class="array flex flex-row flex-wrap justify-around items-center"
+          >
             <div
               v-for="(subItem, index) in item"
               :key="index"
               @dblclick="addImagery(subItem)"
-              class="imagery-item"
+              class="p-2 w-20"
             >
-              <div class="img">
+              <div class="img w-16 h-16 overflow-hidden rounded-xl">
                 <img
                   :src="'./static/imgs/' + subItem.imgUrl"
                   width="64"
                   height="64"
+                  class="w-full h-full"
                 />
               </div>
-              <div class="name">{{ subItem.name }}</div>
+              <div
+                class="name font-sans text-center align-middle text-black text-sm"
+              >
+                {{ subItem.name }}
+              </div>
             </div>
           </div>
           <div v-else @dblclick="addImagery(item)">
-            <div class="img">
+            <div class="img w-16 h-16 overflow-hidden rounded-xl">
               <img
                 :src="'./static/imgs/' + item.imgUrl"
                 width="64"
                 height="64"
+                class="w-full h-full"
               />
             </div>
-            <div class="name">{{ item.name }}</div>
+            <div
+              class="name font-sans text-center align-middle text-black text-sm"
+            >
+              {{ item.name }}
+            </div>
           </div>
         </div>
       </div>
@@ -76,9 +109,10 @@
 import * as Cesium from 'cesium'
 import common from '@/mixin/common'
 import Util from '@/utils/Util'
+import layerOperate from '../layer-operate/layer-operate'
 
 export default {
-  components: {},
+  components: { layerOperate },
   props: {},
   data() {
     return {
@@ -344,7 +378,18 @@ export default {
             }
           }
         }
-      ]
+      ],
+      layerOperate: {
+        show: false,
+        cesiumLayerIndex: -1,
+        init: {
+          alpha: 0,
+          brightness: 0,
+          contrast: 0,
+          hue: 0,
+          saturation: 0
+        }
+      }
     }
   },
   mixins: [common],
@@ -409,92 +454,31 @@ export default {
       const layer = ils.get(this.imageries[index].cesiumLayerIndex)
       ils.remove(layer)
       this.syncImageries()
+    },
+    settingImagery(index) {
+      const ils = this.viewer.imageryLayers
+      const cesiumLayerIndex = this.imageries[index].cesiumLayerIndex
+      const layer = ils.get(cesiumLayerIndex)
+      this.layerOperate.cesiumLayerIndex = cesiumLayerIndex
+      this.layerOperate.show = true
+      this.layerOperate.init.alpha = layer.alpha
+      this.layerOperate.init.brightness = layer.brightness
+      this.layerOperate.init.contrast = layer.contrast
+      this.layerOperate.init.hue = layer.hue
+      this.layerOperate.init.saturation = layer.saturation
+    },
+    layerOperateCallback({ key, value }) {
+      const cesiumLayerIndex = this.layerOperate.cesiumLayerIndex
+      if (cesiumLayerIndex < 0) {
+        return
+      }
+      const layer = this.viewer.imageryLayers.get(cesiumLayerIndex)
+      layer[key] = value
+    },
+    closeLayerOperate() {
+      this.layerOperate.cesiumLayerIndex = -1
+      this.layerOperate.show = false
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.imagery-manager {
-  .type {
-    padding: 0 16px 16px;
-    .title {
-      font-size: 18px;
-      color: white;
-      display: flex;
-      flex-direction: row;
-
-      .name {
-        flex: 1 1 auto;
-      }
-      .op {
-        flex: 0 0 auto;
-        display: flex;
-        flex-direction: row;
-
-        .plus,
-        .sync {
-          cursor: pointer;
-        }
-
-        .sync {
-          margin-left: 8px;
-        }
-      }
-    }
-    .list {
-      .item {
-        padding: 8px 0;
-        color: white;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        .layer-name {
-          margin: 0 10px;
-          flex: 1 1 auto;
-          cursor: default;
-        }
-
-        .remove {
-          cursor: pointer;
-        }
-      }
-    }
-  }
-}
-.imagery-manager-modal {
-  .imagery-sources {
-    display: flex;
-    flex-wrap: wrap;
-    .imagery-array {
-      padding: 0 20px;
-      .array {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-    }
-    .imagery-item {
-      width: 80px;
-      padding: 8px;
-      .img {
-        width: 64px;
-        height: 64px;
-        border-radius: 10px;
-        overflow: hidden;
-      }
-      .name {
-        font-family: sans-serif;
-        text-align: center;
-        vertical-align: middle;
-        color: black;
-        font-size: 14px;
-      }
-    }
-  }
-}
-</style>

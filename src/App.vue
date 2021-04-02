@@ -14,14 +14,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-html,
-body {
-  font-size: 16px;
-  margin: 0;
-  padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-</style>

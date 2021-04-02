@@ -1,28 +1,35 @@
 <template>
   <div class="primitive-manager">
-    <div class="type">
-      <div class="title">
-        <div class="name">模型</div>
-        <div class="op">
-          <div class="plus" @click="plusModels">
+    <div class="type px-4 pb-4">
+      <div class="title text-lg text-white flex flex-row">
+        <div class="name flex-1">模型</div>
+        <div class="op flex flex-row flex-grow-0 flex-shrink-0">
+          <div class="plus cursor-pointer" @click="plusModels">
             <a-icon type="plus" />
           </div>
-          <div class="sync" @click="syncModels">
+          <div class="sync cursor-pointer ml-3" @click="syncModels">
             <a-icon type="sync" />
           </div>
         </div>
       </div>
       <div class="list">
-        <div v-for="(item, index) in models" :key="index" class="item">
+        <div
+          v-for="(item, index) in models"
+          :key="index"
+          class="item flex flex-row justify-center items-center text-white py-2"
+        >
           <a-switch
             size="small"
             :checked="item.checked"
             @change="(checked, e) => changeModelShow(index, checked, e)"
           />
-          <div class="layer-name" @dblclick="modelNameDoubleClick(index)">
+          <div
+            class="layer-name mx-3 flex-1 cursor-default"
+            @dblclick="modelNameDoubleClick(index)"
+          >
             {{ item.name }}
           </div>
-          <div class="remove" @click="removeModel(index)">
+          <div class="remove cursor-default" @click="removeModel(index)">
             <a-icon type="close" />
           </div>
         </div>
@@ -44,7 +51,7 @@
             <a-icon slot="prefix" type="file" />
           </a-input>
         </div>
-        <div class="url">
+        <div class="url mt-4">
           <a-input v-model="addModelModel.url" placeholder="模型Url">
             <a-icon slot="prefix" type="build" />
           </a-input>
@@ -224,65 +231,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.primitive-manager {
-  .type {
-    padding: 0 16px 16px;
-    .title {
-      font-size: 18px;
-      color: white;
-      display: flex;
-      flex-direction: row;
-
-      .name {
-        flex: 1 1 auto;
-      }
-      .op {
-        flex: 0 0 auto;
-        display: flex;
-        flex-direction: row;
-
-        .plus,
-        .sync {
-          cursor: pointer;
-        }
-
-        .sync {
-          margin-left: 8px;
-        }
-      }
-    }
-    .list {
-      .item {
-        padding: 8px 0;
-        color: white;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        .layer-name {
-          margin: 0 10px;
-          flex: 1 1 auto;
-          cursor: default;
-        }
-
-        .remove {
-          cursor: pointer;
-        }
-      }
-    }
-  }
-}
-
-.primitive-manager-modal {
-  .add-model {
-    .name {
-    }
-    .url {
-      margin-top: 16px;
-    }
-  }
-}
-</style>
