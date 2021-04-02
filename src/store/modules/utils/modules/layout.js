@@ -2,6 +2,10 @@ const getDefaultState = () => {
   return {
     showSetting: false,
     showToolBar: true,
+    sampleTable: {
+      show: false,
+      datas: []
+    },
     locationBar: {
       showCameraLocation: false,
       showMouseLocation: false,
@@ -22,6 +26,9 @@ const mutations = {
   SET_SHOW_TOOL_BAR: (state, show) => {
     state.showToolBar = show
   },
+  SET_SAMPLE_TABLE: (state, obj) => {
+    state.sampleTable = obj
+  },
   SET_LOCATION_BAR: (state, obj) => {
     state.locationBar = obj
   }
@@ -33,6 +40,9 @@ const actions = {
   },
   toolBarShown({ commit, state }, show = true) {
     commit('SET_SHOW_TOOL_BAR', show)
+  },
+  sampleTable({ commit, state }, obj) {
+    commit('SET_SAMPLE_TABLE', obj)
   },
   locationBar({ commit, state }, options) {
     const now = state.locationBar

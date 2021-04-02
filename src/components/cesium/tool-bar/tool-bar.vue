@@ -8,7 +8,7 @@
     @click="toolBarClick"
   >
     <div class="menus">
-      <ul class="j-flex titles">
+      <ul class="flex titles">
         <li
           v-for="(menu, index) in menus"
           :key="index"
@@ -20,9 +20,9 @@
       </ul>
     </div>
 
-    <div class="j-flex contents">
+    <div class="flex contents">
       <div
-        class="j-flex content"
+        class="flex content py-1"
         v-show="index === currentMenu"
         v-for="(menu, index) in menus"
         :key="index"
@@ -30,17 +30,17 @@
         <div
           v-for="(group, i) in menu.groups"
           :key="i"
-          class="j-flex j-flex-column j-justify-content-center j-align-items-center group"
+          class="flex flex-col justify-center items-center group"
         >
-          <div class="j-flex group-container">
+          <div class="flex group-container">
             <div
               v-for="(item, j) in group.items"
               :key="j"
-              class="item j-flex j-justify-content-center j-align-items-center"
+              class="item flex justify-center items-center"
             >
               <div
                 @click="itemClicked(index, i, j)"
-                class="item-container j-flex j-flex-column j-justify-content-center j-align-items-center"
+                class="item-container flex flex-col justify-center items-center"
                 :class="item.active && item.active() ? 'active' : ''"
                 :ref="'itemContainer' + index + i + j"
               >
@@ -52,7 +52,7 @@
               <div
                 v-if="item.dropdown"
                 @click.stop="dropdownClicked(index, i, j)"
-                class="dropdown j-flex j-justify-content-center j-align-items-center"
+                class="dropdown flex justify-center items-center"
                 :class="dropdownPanel.show ? 'active' : ''"
               >
                 <svg-icon name="arrow-down" />
@@ -87,6 +87,9 @@ import {
   removeInvertClassification,
   addYingXiuZhenZhongYiZhiClassificationPrimitive
 } from '@/libs/cesium/classification'
+
+import { drawPoint, drawShape, DrawMode, removeAll } from '@/libs/cesium/draw'
+import * as sample from '@/libs/cesium/sample'
 import { mapState } from 'vuex'
 
 export default {
@@ -237,7 +240,7 @@ export default {
               items: [
                 {
                   name: '高亮瓦片',
-                  icon: 'setting',
+                  icon: 'tiled',
                   clicked: params => {
                     this.$store.dispatch(
                       'cesium/tool-bar/switchHightlight3DTileFeatureItemActive'
@@ -259,7 +262,7 @@ export default {
                 },
                 {
                   name: '单体化(滑动染色)',
-                  icon: 'setting',
+                  icon: 'move',
                   clicked: params => {
                     this.$store.dispatch(
                       'cesium/tool-bar/switchClassifyItemActive'
@@ -291,7 +294,7 @@ export default {
                 },
                 {
                   name: '单体化(点击高亮)',
-                  icon: 'setting',
+                  icon: 'select',
                   clicked: params => {
                     this.$store.dispatch(
                       'cesium/tool-bar/switchInvertClassifyItemActive'
@@ -322,6 +325,110 @@ export default {
                   active: () => this.invertClassifyItemActive
                 }
               ]
+            },
+            {
+              name: '绘制',
+              init: params => {},
+              items: [
+                {
+                  name: '画点',
+                  icon: 'point',
+                  clicked: params => {
+                    const self = this
+                    const action = () => {
+                      self.$store.dispatch(
+                        'cesium/tool-bar/switchDrawPointItemActive'
+                      )
+                    }
+                    drawPoint({
+                      ...params,
+                      started: action,
+                      stoped: action
+                    })
+                  },
+                  active: () => this.drawPointItemActive
+                },
+                {
+                  name: '画线',
+                  icon: 'line',
+                  clicked: params => {
+                    const self = this
+                    const action = () => {
+                      self.$store.dispatch(
+                        'cesium/tool-bar/switchDrawPolylineItemActive'
+                      )
+                    }
+                    drawShape({
+                      ...params,
+                      mode: DrawMode.Polyline,
+                      started: action,
+                      stoped: action
+                    })
+                  },
+                  active: () => this.drawPolylineItemActive
+                },
+                {
+                  name: '画面',
+                  icon: 'polygon',
+                  clicked: params => {
+                    const self = this
+                    const action = () => {
+                      self.$store.dispatch(
+                        'cesium/tool-bar/switchDrawPolygonItemActive'
+                      )
+                    }
+                    drawShape({
+                      ...params,
+                      mode: DrawMode.Polygon,
+                      started: action,
+                      stoped: action
+                    })
+                  },
+                  active: () => this.drawPolygonItemActive
+                },
+                {
+                  name: '移除',
+                  icon: 'delete',
+                  clicked: params => {
+                    removeAll(params)
+                  }
+                }
+              ]
+            },
+            {
+              name: '采样',
+              init: params => {},
+              items: [
+                {
+                  name: '地形采样',
+                  icon: 'terrain',
+                  clicked: params => {
+                    const self = this
+                    const cb = datas => {
+                      self.$store.dispatch('utils/layout/sampleTable', {
+                        show: true,
+                        datas: datas
+                      })
+                    }
+                    sample.sampleTerrain({
+                      ...params,
+                      cb
+                    })
+                  }
+                },
+                {
+                  name: '移除',
+                  icon: 'delete',
+                  clicked: params => {
+                    const self = this
+                    sample.removeAll(params)
+                    self.$store.dispatch('utils/layout/sampleTable', {
+                      show: false,
+                      datas: []
+                    })
+                  }
+                }
+              ]
             }
           ]
         },
@@ -340,7 +447,7 @@ export default {
                 },
                 {
                   name: 'API文档',
-                  icon: 'setting',
+                  icon: 'document',
                   clicked: params => {
                     window.open(
                       'https://cesium.com/docs/cesiumjs-ref-doc/index.html'
@@ -349,7 +456,7 @@ export default {
                 },
                 {
                   name: '官方Demo',
-                  icon: 'setting',
+                  icon: 'demo',
                   clicked: params => {
                     window.open('https://sandcastle.cesium.com/')
                   }
@@ -372,7 +479,8 @@ export default {
   mixins: [common],
   computed: {
     ...mapState('utils/layout', {
-      locationBar: state => state.locationBar
+      locationBar: state => state.locationBar,
+      showSampleTable: state => state.showSampleTable
     }),
     ...mapState('cesium/nature', {
       showSun: state => state.showSun,
@@ -385,7 +493,10 @@ export default {
       hightlight3DTileFeatureItemActive: state =>
         state.hightlight3DTileFeatureItemActive,
       classifyItemActive: state => state.classifyItemActive,
-      invertClassifyItemActive: state => state.invertClassifyItemActive
+      invertClassifyItemActive: state => state.invertClassifyItemActive,
+      drawPointItemActive: state => state.drawPointItemActive,
+      drawPolylineItemActive: state => state.drawPolylineItemActive,
+      drawPolygonItemActive: state => state.drawPolygonItemActive
     })
   },
   watch: {},
@@ -507,7 +618,6 @@ export default {
   .contents {
     margin-top: 6px;
     .content {
-      padding-bottom: 3px;
       .group {
         padding: 0 26px;
         border-right: solid 3px #474747;

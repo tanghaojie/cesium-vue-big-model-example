@@ -1,5 +1,8 @@
 <template>
-  <div class="all" :style="{ '--tool-bar-height': toolBarHeight + 'px' }">
+  <div
+    class="all h-screen w-screen z-0"
+    :style="{ '--tool-bar-height': toolBarHeight + 'px' }"
+  >
     <cesium-wrapper
       :timeline="cesiumOptions.timeline"
       :animation="cesiumOptions.animation"
@@ -13,19 +16,20 @@
       :navigationHelpButton="cesiumOptions.navigationHelpButton"
       globalViewerMountKey="qq"
       globalCesiumMountKey="cc"
-      class="cesium-wrapper"
+      class="cesium-wrapper relative"
     >
-      <overlay position-mode="fixed" class="over">
-        <div class="tool-bar">
+      <overlay position-mode="fixed" class="over flex flex-col">
+        <div class="tool-bar relative w-full">
           <tool-bar ref="toolBar" v-show="showToolBar" />
           <resize-observer @notify="handleResize" />
         </div>
-        <div class="content-view">
+        <div class="content-view relative flex-auto">
           <browser-panel />
           <location-bar />
         </div>
       </overlay>
     </cesium-wrapper>
+
     <overlay
       v-if="showSetting"
       :position-mode="'fixed'"
@@ -33,6 +37,9 @@
       :accept-pointer-events="true"
     >
       <setting :current="cesiumOptions" @optionChange="optionChange" />
+    </overlay>
+    <overlay v-if="sampleTable.show" :position-mode="'fixed'" :z-index="9999">
+      <sample-table />
     </overlay>
   </div>
 </template>
@@ -44,6 +51,7 @@ import toolBar from './cesium/tool-bar/tool-bar'
 import locationBar from './cesium/location-bar/location-bar'
 import setting from './cesium/setting/setting'
 import Overlay from './overlay/overlay'
+import sampleTable from '@/components/antv-components/sample-table/sample-table'
 import { mapState } from 'vuex'
 
 export default {
@@ -53,12 +61,14 @@ export default {
     browserPanel,
     setting,
     toolBar,
-    locationBar
+    locationBar,
+    sampleTable
   },
   computed: {
     ...mapState('utils/layout', {
       showSetting: state => state.showSetting,
-      showToolBar: state => state.showToolBar
+      showToolBar: state => state.showToolBar,
+      sampleTable: state => state.sampleTable
     })
   },
   methods: {
@@ -94,25 +104,6 @@ export default {
 
 <style lang="scss" scoped>
 .all {
-  height: 100vh;
-  width: 100vw;
-  z-index: 0;
   padding-top: var(--tool-bar-height); //same as tool-bar height
-
-  .cesium-wrapper {
-    position: relative;
-    .over {
-      display: flex;
-      flex-direction: column;
-      .tool-bar {
-        position: relative;
-        width: 100%;
-      }
-      .content-view {
-        position: relative;
-        flex: 1 1 auto;
-      }
-    }
-  }
 }
 </style>

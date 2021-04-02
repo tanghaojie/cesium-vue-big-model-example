@@ -1,5 +1,9 @@
 <template>
-  <div id="cesiumContainer" ref="viewer">
+  <div
+    id="cesiumContainer"
+    class="w-full h-full m-0 p-0 overflow-hidden"
+    ref="viewer"
+  >
     <slot />
   </div>
 </template>
@@ -529,6 +533,8 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         ...options
       })
 
+      viewer.scene.primitives.removeAll()
+
       viewer.cesiumWidget.creditContainer.style.display = 'none'
       this.viewer = viewer
       this.viewerContainer = viewer._element
@@ -634,13 +640,3 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
   }
 }
 </script>
-
-<style lang="scss" scoped>
-#cesiumContainer {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-</style>

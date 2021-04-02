@@ -1,8 +1,8 @@
 <template>
-  <div class="j-flex location-bar">
+  <div class="flex location-bar">
     <div
       v-if="locationBar && locationBar.showCameraLocation"
-      class="j-flex type"
+      class="flex type"
     >
       <span>视角:</span>
       <div class="item">
@@ -21,7 +21,7 @@
 
     <div
       v-if="locationBar && locationBar.showMouseLocation"
-      class="j-flex type"
+      class="flex type"
     >
       <span>鼠标:</span>
       <div class="item">
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div v-if="locationBar && locationBar.showFPS" class="j-flex type">
+    <div v-if="locationBar && locationBar.showFPS" class="flex type">
       <span>FPS:</span>
       <div class="item">
         <span class="value">{{ fps }}</span>

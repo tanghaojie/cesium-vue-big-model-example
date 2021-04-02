@@ -114,7 +114,7 @@ export default {
       this.add3DTileset({
         name: '倾斜摄影模型',
         url: 'http://117.139.247.104:60001/models/3dtiles/yingxiu/tileset.json',
-        show: true
+        show: false
       })
 
       this.add3DTileset({

@@ -88,7 +88,6 @@ const addInvertClassification = function(params) {
 }
 
 const removeInvertClassification = function(params) {
-  console.log(params)
   invertClassification({ viewer: params.viewer, invert: false })
 }
 
