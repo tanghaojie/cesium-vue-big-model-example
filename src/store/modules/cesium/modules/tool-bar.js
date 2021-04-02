@@ -1,5 +1,12 @@
 const getDefaultState = () => {
   return {
+    dropdown: {
+      show: false,
+      componentName: '',
+      top: 0,
+      left: 0
+    },
+
     hightlight3DTileFeatureItemActive: false,
     classifyItemActive: false,
     invertClassifyItemActive: false,
@@ -15,6 +22,10 @@ const state = getDefaultState()
 const mutations = {
   RESET_STATE: state => {
     Object.assign(state, getDefaultState())
+  },
+
+  SET_DROP_DOWN: (state, obj) => {
+    state.dropdown = obj
   },
   SET_HIGHTLIGHT_3DTILE_FEATURE_ITEM_ACTIVE: (state, active) => {
     state.hightlight3DTileFeatureItemActive = active
@@ -37,6 +48,9 @@ const mutations = {
 }
 
 const actions = {
+  dropdown({ commit, state }, obj) {
+    commit('SET_DROP_DOWN', obj)
+  },
   switchHightlight3DTileFeatureItemActive({ commit, state }) {
     const switchTo = !state.hightlight3DTileFeatureItemActive
     commit('SET_HIGHTLIGHT_3DTILE_FEATURE_ITEM_ACTIVE', switchTo)

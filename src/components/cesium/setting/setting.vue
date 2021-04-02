@@ -1,22 +1,31 @@
 <template>
-  <div class="setting" @click.stop="close">
-    <div class="container" @click.stop>
-      <div class="header">
-        <div class="title">设置</div>
+  <div
+    class="setting bg-black bg-opacity-60 w-full h-full flex justify-center items-center"
+    @click.stop="close"
+  >
+    <div class="s-container bg-gray-600 p-5 rounded-lg" @click.stop>
+      <div class="header flex justify-between items-center">
+        <div class="title text-white text-lg flex-auto text-center font-bold">
+          设置
+        </div>
         <a-button
           shape="circle"
           icon="close-circle"
-          class="close"
+          class="close flex-0 bg-gray-600 text-white"
           @click.native="close"
         />
       </div>
 
-      <div class="option">
-        <div v-for="(item, index) in options" :key="index" class="item">
-          <div class="text">{{ item.text }}</div>
-          <div class="op">
+      <div class="option flex flex-wrap mt-5">
+        <div
+          v-for="(item, index) in options"
+          :key="index"
+          class="item h-9 flex items-center"
+        >
+          <div class="text text-white">{{ item.text }}</div>
+          <div class="op ml-5">
             <a-switch
-              :checked="current[item.key]"
+              :checked="cesiumOptions[item.key]"
               @change="checked => optionChange(item.key, checked)"
             />
           </div>
@@ -27,11 +36,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  props: {
-    current: {
-      type: Object
-    }
+  computed: {
+    ...mapState('cesium/cesium', {
+      cesiumOptions: state => state.options
+    })
   },
   data() {
     return {
@@ -83,8 +94,8 @@ export default {
     close() {
       this.$store.dispatch('utils/layout/settingShown', false)
     },
-    optionChange(key, value) {
-      this.$emit('optionChange', { key, value })
+    optionChange(key, checked) {
+      this.cesiumOptions[key] = checked
     }
   }
 }
@@ -92,50 +103,15 @@ export default {
 
 <style lang="scss" scoped>
 .setting {
-  background-color: rgba($color: #000000, $alpha: 0.6);
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 16px;
-
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .title {
-        font-size: 18px;
-        flex: 1 1 auto;
-        text-align: center;
-      }
-      .close {
-        flex: 0 0 auto;
-      }
-    }
-
+  .s-container {
     .option {
-      --op-width: 400;
+      --op-width: 500;
       width: calc(var(--op-width) * 1px);
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 18px;
 
       .item {
-        height: 36px;
         width: calc(var(--op-width) * 0.5px);
-        display: flex;
-        align-items: center;
         .text {
           width: calc(var(--op-width) * 0.25px);
-        }
-        .op {
-          margin-left: 20px;
         }
       }
     }

@@ -87,6 +87,10 @@ export default {
       type: String,
       default: '',
       required: false
+    },
+    cesiumToken: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -528,10 +532,13 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         // mapProjection: new Cesium.WebMercatorProjection(), //地 图投影体系
         // dataSources: new Cesium.DataSourceCollection() // 需要进行可视化的数据源的集合
       }
+
+      Cesium.Ion.defaultAccessToken = this.cesiumToken
       const viewer = new Cesium.Viewer(id, {
         ...DEFAULT_OPT,
         ...options
       })
+      console.log(Cesium.Ion.defaultAccessToken)
 
       viewer.scene.primitives.removeAll()
 

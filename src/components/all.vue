@@ -4,16 +4,19 @@
     :style="{ '--tool-bar-height': toolBarHeight + 'px' }"
   >
     <cesium-wrapper
-      :timeline="cesiumOptions.timeline"
-      :animation="cesiumOptions.animation"
-      :baseLayerPicker="cesiumOptions.baseLayerPicker"
-      :fullscreenButton="cesiumOptions.fullscreenButton"
-      :geocoder="cesiumOptions.geocoder"
-      :homeButton="cesiumOptions.homeButton"
-      :infoBox="cesiumOptions.infoBox"
-      :sceneModePicker="cesiumOptions.sceneModePicker"
-      :selectionIndicator="cesiumOptions.selectionIndicator"
-      :navigationHelpButton="cesiumOptions.navigationHelpButton"
+      :timeline="options.timeline"
+      :animation="options.animation"
+      :baseLayerPicker="options.baseLayerPicker"
+      :fullscreenButton="options.fullscreenButton"
+      :geocoder="options.geocoder"
+      :homeButton="options.homeButton"
+      :infoBox="options.infoBox"
+      :sceneModePicker="options.sceneModePicker"
+      :selectionIndicator="options.selectionIndicator"
+      :navigationHelpButton="options.navigationHelpButton"
+      :cesium-token="
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzOWUwNzhlOS00NWY3LTRhYjAtODI2Mi02NGI0YmJlMzdlYTkiLCJpZCI6NDMyMjgsImlhdCI6MTYxNzM1MjYwOX0.RP05v-KUiNYBMWhMYIl2x7Q-eys__7QrBsnLIzGy4Ms'
+      "
       globalViewerMountKey="qq"
       globalCesiumMountKey="cc"
       class="cesium-wrapper relative"
@@ -25,22 +28,9 @@
         </div>
         <div class="content-view relative flex-auto">
           <browser-panel />
-          <location-bar />
         </div>
       </overlay>
     </cesium-wrapper>
-
-    <overlay
-      v-if="showSetting"
-      :position-mode="'fixed'"
-      :z-index="999"
-      :accept-pointer-events="true"
-    >
-      <setting :current="cesiumOptions" @optionChange="optionChange" />
-    </overlay>
-    <overlay v-if="sampleTable.show" :position-mode="'fixed'" :z-index="9999">
-      <sample-table />
-    </overlay>
   </div>
 </template>
 
@@ -48,10 +38,7 @@
 import CesiumWrapper from './cesium/viewer-wrapper/viewer-wrapper'
 import browserPanel from './cesium/browser-panel/browser-panel.vue'
 import toolBar from './cesium/tool-bar/tool-bar'
-import locationBar from './cesium/location-bar/location-bar'
-import setting from './cesium/setting/setting'
 import Overlay from './overlay/overlay'
-import sampleTable from '@/components/antv-components/sample-table/sample-table'
 import { mapState } from 'vuex'
 
 export default {
@@ -59,40 +46,23 @@ export default {
     CesiumWrapper,
     Overlay,
     browserPanel,
-    setting,
-    toolBar,
-    locationBar,
-    sampleTable
+    toolBar
   },
   computed: {
+    ...mapState('cesium/cesium', {
+      options: state => state.options
+    }),
     ...mapState('utils/layout', {
-      showSetting: state => state.showSetting,
-      showToolBar: state => state.showToolBar,
-      sampleTable: state => state.sampleTable
+      showToolBar: state => state.showToolBar
     })
   },
   methods: {
-    optionChange(option) {
-      this.cesiumOptions[option.key] = option.value
-    },
     handleResize({ height }) {
       this.toolBarHeight = height
     }
   },
   data() {
     return {
-      cesiumOptions: {
-        animation: false,
-        baseLayerPicker: false,
-        fullscreenButton: false,
-        geocoder: false,
-        homeButton: false,
-        infoBox: false,
-        sceneModePicker: false,
-        selectionIndicator: false,
-        timeline: false,
-        navigationHelpButton: false
-      },
       toolBarHeight: 100
     }
   },

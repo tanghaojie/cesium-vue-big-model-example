@@ -58,9 +58,7 @@ export default {
             url: 'http://117.139.247.104:60001/terrains/ssdx'
           },
           afterReady: function(viewer, success) {
-            console.log(555555555)
             if (viewer && success) {
-              console.log(11111111111)
               viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees(
                   102.81450979915033,

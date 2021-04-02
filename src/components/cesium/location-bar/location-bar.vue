@@ -1,9 +1,6 @@
 <template>
   <div class="flex location-bar">
-    <div
-      v-if="locationBar && locationBar.showCameraLocation"
-      class="flex type"
-    >
+    <div v-if="locationBar && locationBar.showCameraLocation" class="flex type">
       <span>视角:</span>
       <div class="item">
         <span class="label">经度:</span>
@@ -19,10 +16,7 @@
       </div>
     </div>
 
-    <div
-      v-if="locationBar && locationBar.showMouseLocation"
-      class="flex type"
-    >
+    <div v-if="locationBar && locationBar.showMouseLocation" class="flex type">
       <span>鼠标:</span>
       <div class="item">
         <span class="label">经度:</span>
@@ -187,6 +181,7 @@ export default {
       handler.setInputAction(function(e) {
         const position = viewer.scene.pickPosition(e.endPosition)
         const cartographic = Cesium.Cartographic.fromCartesian(position)
+        console.log(cartographic)
         that.mouseLocation.longitude = Cesium.Math.toDegrees(
           cartographic.longitude
         ).toFixed(5)
