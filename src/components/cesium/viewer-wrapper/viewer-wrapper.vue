@@ -91,6 +91,10 @@ export default {
     cesiumToken: {
       type: String,
       default: ''
+    },
+    depthTestAgainstTerrain: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -480,13 +484,14 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
   },
   methods: {
     initCesiumDefault() {
-      var west = 94
-      var south = 26.5
-      var east = 112
-      var north = 33.5
-      var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north)
+      const west = 94
+      const south = 26.5
+      const east = 112
+      const north = 33.5
+      const rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north)
       Cesium.Camera.DEFAULT_VIEW_FACTOR = 0
       Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle
+      Cesium.Ion.defaultAccessToken = this.cesiumToken
     },
 
     initCesium(id, options = {}) {
@@ -510,7 +515,7 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         // imageryProviderViewModels: Cesium.createDefaultImageryProviderViewModels(), // 可供BaseLayerPicker选择的图像图层ProviderViewModel数组
         // selectedTerrainProviderViewModel: undefined, // 当前地形图层的显示模型，仅baseLayerPicker设为true有意义
         // terrainProviderViewModels: Cesium.createDefaultTerrainProviderViewModels(), // 可供BaseLayerPicker选择的地形图层ProviderViewModel数组
-        imageryProvider: new Cesium.IonImageryProvider({ assetId: 3954 }), // 图像图层提供者，仅baseLayerPicker设为false有意义
+        // imageryProvider: new Cesium.IonImageryProvider({ assetId: 3954 }), // 图像图层提供者，仅baseLayerPicker设为false有意义
         terrainProvider: undefined, // 地形图层提供者，仅baseLayerPicker设为false有意义
         // skyBox: new Cesium.SkyBox({
         //   sources: {
@@ -532,13 +537,12 @@ Either specify options.terrainProvider instead or set options.baseLayerPicker to
         // mapProjection: new Cesium.WebMercatorProjection(), //地 图投影体系
         // dataSources: new Cesium.DataSourceCollection() // 需要进行可视化的数据源的集合
       }
-
-      Cesium.Ion.defaultAccessToken = this.cesiumToken
       const viewer = new Cesium.Viewer(id, {
         ...DEFAULT_OPT,
         ...options
       })
-      console.log(Cesium.Ion.defaultAccessToken)
+
+      viewer.scene.globe.depthTestAgainstTerrain = this.depthTestAgainstTerrain
 
       viewer.scene.primitives.removeAll()
 

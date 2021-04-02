@@ -178,10 +178,22 @@ export default {
       const { viewer } = this
       const that = this
       const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+      const hasDepthTest = viewer.scene.globe.depthTestAgainstTerrain
       handler.setInputAction(function(e) {
-        const position = viewer.scene.pickPosition(e.endPosition)
+        let position
+        if (hasDepthTest) {
+          position = viewer.scene.pickPosition(e.endPosition)
+        } else {
+          position = viewer.scene.camera.pickEllipsoid(
+            e.endPosition,
+            viewer.scene.globe.ellipsoid
+          )
+        }
+
+        if (!Cesium.defined(position)) {
+          return
+        }
         const cartographic = Cesium.Cartographic.fromCartesian(position)
-        console.log(cartographic)
         that.mouseLocation.longitude = Cesium.Math.toDegrees(
           cartographic.longitude
         ).toFixed(5)

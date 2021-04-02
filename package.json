@@ -10,7 +10,7 @@
   "dependencies": {
     "@antv/g2": "^4.1.13",
     "ant-design-vue": "^1.7.4",
-    "cesium": "^1.78.0",
+    "cesium": "^1.80.0",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-resize": "^1.0.0",

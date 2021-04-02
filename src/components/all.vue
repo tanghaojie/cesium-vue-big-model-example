@@ -17,6 +17,7 @@
       :cesium-token="
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzOWUwNzhlOS00NWY3LTRhYjAtODI2Mi02NGI0YmJlMzdlYTkiLCJpZCI6NDMyMjgsImlhdCI6MTYxNzM1MjYwOX0.RP05v-KUiNYBMWhMYIl2x7Q-eys__7QrBsnLIzGy4Ms'
       "
+      :depth-test-against-terrain="true"
       globalViewerMountKey="qq"
       globalCesiumMountKey="cc"
       class="cesium-wrapper relative"
