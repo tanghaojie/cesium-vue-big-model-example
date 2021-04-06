@@ -28,14 +28,12 @@ import overlay from '../../../../overlay/overlay'
 
 import common from '@/mixin/common'
 import toolBarGroupMixin from './mixin'
-import cameraChangeRate from '../../camera-change-rate/camera-change-rate'
 import { mapState } from 'vuex'
 
 export default {
   components: {
     toolBarGroup,
     toolBarGroupItem,
-    cameraChangeRate,
     locationBar,
     overlay
   },

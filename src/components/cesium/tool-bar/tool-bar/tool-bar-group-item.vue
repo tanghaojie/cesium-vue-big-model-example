@@ -1,12 +1,17 @@
 <template>
   <div class="tool-bar-group-item">
-    <div class="item flex justify-center items-center mx-1 px-3">
+    <div class="item flex justify-center items-center mx-1 px-2">
       <div
         @click="itemClicked"
         class="item-container flex flex-col justify-center items-center cursor-pointer hover:text-blue-400"
         :class="isActive ? 'text-blue-400' : ''"
       >
-        <div class="icon text-5xl">
+        <div
+          class="icon text-4xl"
+          :style="{
+            'background-color': iconBgColor
+          }"
+        >
           <svg-icon :name="iconName" />
         </div>
         <div class="name text-sm text-white">
@@ -45,7 +50,8 @@ export default {
     dropdownActive: {
       type: Boolean,
       default: false
-    }
+    },
+    iconBgColor: {}
   },
   data() {
     return {

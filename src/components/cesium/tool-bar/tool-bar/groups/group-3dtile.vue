@@ -52,7 +52,7 @@ export default {
             icon: 'tiled',
             clicked: params => {
               this.$store.dispatch(
-                'cesium/tool-bar/switchHightlight3DTileFeatureItemActive'
+                'cesium/tool-bar-classify/switchHightlight3DTileFeatureItemActive'
               )
               const { viewer, item } = params
               if (item.clickedResult) {
@@ -70,10 +70,12 @@ export default {
             active: () => this.hightlight3DTileFeatureItemActive
           },
           {
-            name: '单体化(滑动染色)',
+            name: '单体(滑动)',
             icon: 'move',
             clicked: params => {
-              this.$store.dispatch('cesium/tool-bar/switchClassifyItemActive')
+              this.$store.dispatch(
+                'cesium/tool-bar-classify/switchClassifyItemActive'
+              )
               const { viewer, item } = params
               if (item.clickedResult) {
                 removeClassified()
@@ -100,11 +102,11 @@ export default {
             active: () => this.classifyItemActive
           },
           {
-            name: '单体化(点击高亮)',
+            name: '单体(点击)',
             icon: 'select',
             clicked: params => {
               this.$store.dispatch(
-                'cesium/tool-bar/switchInvertClassifyItemActive'
+                'cesium/tool-bar-classify/switchInvertClassifyItemActive'
               )
               const { viewer, item } = params
               if (item.clickedResult) {
@@ -137,7 +139,7 @@ export default {
   },
   mixins: [common, toolBarGroupMixin],
   computed: {
-    ...mapState('cesium/tool-bar', {
+    ...mapState('cesium/tool-bar-classify', {
       hightlight3DTileFeatureItemActive: state =>
         state.hightlight3DTileFeatureItemActive,
       classifyItemActive: state => state.classifyItemActive,

@@ -13,6 +13,7 @@ Vue.use(Antd)
 Vue.use(VueResize)
 importAll(require.context('./components/icon/svgs', false, /\.svg$/))
 Vue.component('svg-icon', svgIcon)
+
 Vue.config.productionTip = false
 
 new Vue({

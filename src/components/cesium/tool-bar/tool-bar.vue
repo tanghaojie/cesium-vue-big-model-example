@@ -42,13 +42,16 @@
 <script>
 import toolBarGroup from './tool-bar/tool-bar-group'
 import toolBarGroupItem from './tool-bar/tool-bar-group-item'
-import toolBarContent1 from './tool-bar/contents/content-1'
-import toolBarContent2 from './tool-bar/contents/content-2'
-import toolBarContent3 from './tool-bar/contents/content-3'
-import toolBarContent4 from './tool-bar/contents/content-4'
+import toolBarContentView from './tool-bar/contents/content-view'
+import toolBarContentEffect from './tool-bar/contents/content-effect'
+import toolBarContentTool from './tool-bar/contents/content-tool'
+import toolBarContentTerrainTool from './tool-bar/contents/content-terrain-tool'
+import toolBarContentOther from './tool-bar/contents/content-other'
 
 // for dropdown
-import cameraChangeRate from '../tool-bar/camera-change-rate/camera-change-rate'
+import cameraChangeRate from '../tool-bar/dropdown/camera-change-rate/camera-change-rate'
+import elevationContour from '../tool-bar/dropdown/elevation-contour/elevation-contour'
+import earthColor from '../tool-bar/dropdown/earth-color/earth-color'
 
 import * as Cesium from 'cesium'
 import common from '@/mixin/common'
@@ -59,11 +62,15 @@ export default {
   components: {
     toolBarGroup,
     toolBarGroupItem,
-    toolBarContent1,
-    toolBarContent2,
-    toolBarContent3,
-    toolBarContent4,
-    cameraChangeRate
+    toolBarContentView,
+    toolBarContentEffect,
+    toolBarContentTool,
+    toolBarContentTerrainTool,
+    toolBarContentOther,
+    // for dropdown
+    cameraChangeRate,
+    elevationContour,
+    earthColor
   },
   data() {
     return {
@@ -71,19 +78,23 @@ export default {
       tabs: [
         {
           name: '视图',
-          componentName: 'toolBarContent1'
+          componentName: 'toolBarContentView'
         },
         {
           name: '效果',
-          componentName: 'toolBarContent2'
+          componentName: 'toolBarContentEffect'
         },
         {
           name: '工具',
-          componentName: 'toolBarContent3'
+          componentName: 'toolBarContentTool'
+        },
+        {
+          name: '地形工具',
+          componentName: 'toolBarContentTerrainTool'
         },
         {
           name: '其他',
-          componentName: 'toolBarContent4'
+          componentName: 'toolBarContentOther'
         }
       ]
     }

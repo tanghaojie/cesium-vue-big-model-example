@@ -1,5 +1,5 @@
 <template>
-  <div class="camera-change-rate">
+  <div class="camera-change-rate w-40">
     <div class="name">坐标采样率</div>
     <a-slider
       v-model="value"
@@ -43,9 +43,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.camera-change-rate {
-  width: 150px;
-}
-</style>

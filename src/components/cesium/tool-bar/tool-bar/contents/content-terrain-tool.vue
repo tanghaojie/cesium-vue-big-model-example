@@ -1,24 +1,19 @@
 <template>
   <tool-bar-content>
-    <group-3-d-tile />
-    <group-draw />
     <group-sample />
+    <group-terrain-color />
   </tool-bar-content>
 </template>
 
 <script>
 import toolBarContent from '../tool-bar-content'
-import group3DTile from '../groups/group-3dtile'
-import groupDraw from '../groups/group-draw'
 import groupSample from '../groups/group-sample'
-import common from '@/mixin/common'
+import groupTerrainColor from '../groups/group-terrain-color'
 export default {
   components: {
     toolBarContent,
-    group3DTile,
-    groupDraw,
-    groupSample
-  },
-  mixins: [common]
+    groupSample,
+    groupTerrainColor
+  }
 }
 </script>

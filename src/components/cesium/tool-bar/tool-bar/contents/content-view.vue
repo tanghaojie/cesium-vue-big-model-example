@@ -1,18 +1,19 @@
 <template>
   <tool-bar-content>
-    <group-other />
+    <group-view />
+    <group-status />
   </tool-bar-content>
 </template>
 
 <script>
 import toolBarContent from '../tool-bar-content'
-import groupOther from '../groups/group-other'
-import common from '@/mixin/common'
+import groupView from '../groups/group-view'
+import groupStatus from '../groups/group-status'
 export default {
   components: {
     toolBarContent,
-    groupOther
-  },
-  mixins: [common]
+    groupView,
+    groupStatus
+  }
 }
 </script>

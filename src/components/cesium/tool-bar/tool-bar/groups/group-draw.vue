@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       group: {
-        name: '绘制',
+        name: '绘制，左键开始，右键结束',
         items: [
           {
             name: '画点',
@@ -40,7 +40,7 @@ export default {
               const self = this
               const action = () => {
                 self.$store.dispatch(
-                  'cesium/tool-bar/switchDrawPointItemActive'
+                  'cesium/tool-bar-draw/switchDrawPointItemActive'
                 )
               }
               drawPoint({
@@ -58,7 +58,7 @@ export default {
               const self = this
               const action = () => {
                 self.$store.dispatch(
-                  'cesium/tool-bar/switchDrawPolylineItemActive'
+                  'cesium/tool-bar-draw/switchDrawPolylineItemActive'
                 )
               }
               drawShape({
@@ -77,7 +77,7 @@ export default {
               const self = this
               const action = () => {
                 self.$store.dispatch(
-                  'cesium/tool-bar/switchDrawPolygonItemActive'
+                  'cesium/tool-bar-draw/switchDrawPolygonItemActive'
                 )
               }
               drawShape({
@@ -102,7 +102,7 @@ export default {
   },
   mixins: [common, toolBarGroupMixin],
   computed: {
-    ...mapState('cesium/tool-bar', {
+    ...mapState('cesium/tool-bar-draw', {
       drawPointItemActive: state => state.drawPointItemActive,
       drawPolylineItemActive: state => state.drawPolylineItemActive,
       drawPolygonItemActive: state => state.drawPolygonItemActive
