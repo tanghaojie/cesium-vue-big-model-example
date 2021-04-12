@@ -13,13 +13,18 @@ const drawPoint = function(params) {
   pointPrimitives.name = DRAW_POINT_NAME
   viewer.scene.primitives.add(pointPrimitives)
 
+  const hasDepthTest = viewer.scene.globe.depthTestAgainstTerrain
   const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas)
-
-  handler.setInputAction(function(movement) {
-    const cartesian = scene.camera.pickEllipsoid(
-      movement.position,
-      scene.globe.ellipsoid
-    )
+  handler.setInputAction(function(e) {
+    let cartesian
+    if (hasDepthTest) {
+      cartesian = viewer.scene.pickPosition(e.position)
+    } else {
+      cartesian = viewer.scene.camera.pickEllipsoid(
+        e.position,
+        viewer.scene.globe.ellipsoid
+      )
+    }
 
     pointPrimitives.add({
       position: cartesian,
@@ -97,12 +102,18 @@ const drawShape = function(params) {
     window.alert('This browser does not support pickPosition.')
   }
 
+  const hasDepthTest = viewer.scene.globe.depthTestAgainstTerrain
   const handler = new Cesium.ScreenSpaceEventHandler(scene.canvas)
   handler.setInputAction(function(event) {
-    const position = scene.camera.pickEllipsoid(
-      event.position,
-      scene.globe.ellipsoid
-    )
+    let position
+    if (hasDepthTest) {
+      position = viewer.scene.pickPosition(event.position)
+    } else {
+      position = viewer.scene.camera.pickEllipsoid(
+        event.position,
+        viewer.scene.globe.ellipsoid
+      )
+    }
     if (!Cesium.defined(position)) {
       return
     }
@@ -125,10 +136,15 @@ const drawShape = function(params) {
   }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
   handler.setInputAction(function(event) {
-    const newPosition = scene.camera.pickEllipsoid(
-      event.endPosition,
-      scene.globe.ellipsoid
-    )
+    let newPosition
+    if (hasDepthTest) {
+      newPosition = viewer.scene.pickPosition(event.endPosition)
+    } else {
+      newPosition = viewer.scene.camera.pickEllipsoid(
+        event.endPosition,
+        viewer.scene.globe.ellipsoid
+      )
+    }
     if (!Cesium.defined(mousePoint) || !Cesium.defined(newPosition)) {
       return
     }
